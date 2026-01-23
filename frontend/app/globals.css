@@ -31,3 +31,73 @@
     @apply py-16 sm:py-20 lg:py-24;
   }
 }
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  @apply outline-none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  @apply text-ink/30 float-left h-0 pointer-events-none;
+  content: attr(data-placeholder);
+}
+
+.ProseMirror h1 {
+  @apply text-2xl font-serif font-semibold mb-4 mt-6;
+}
+
+.ProseMirror h2 {
+  @apply text-xl font-serif font-semibold mb-3 mt-5;
+}
+
+.ProseMirror h3 {
+  @apply text-lg font-serif font-semibold mb-2 mt-4;
+}
+
+.ProseMirror p {
+  @apply mb-4;
+}
+
+.ProseMirror ul {
+  @apply list-disc pl-6 mb-4;
+}
+
+.ProseMirror ol {
+  @apply list-decimal pl-6 mb-4;
+}
+
+.ProseMirror li {
+  @apply mb-1;
+}
+
+.ProseMirror blockquote {
+  @apply border-l-4 border-ink/20 pl-4 italic text-ink/70 my-4;
+}
+
+.ProseMirror strong {
+  @apply font-semibold;
+}
+
+.ProseMirror em {
+  @apply italic;
+}
+
+.ProseMirror s {
+  @apply line-through;
+}
+
+.ProseMirror code {
+  @apply bg-cream px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.ProseMirror pre {
+  @apply bg-cream p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.ProseMirror pre code {
+  @apply bg-transparent p-0;
+}
+
+.ProseMirror hr {
+  @apply border-t border-border-light my-6;
+}

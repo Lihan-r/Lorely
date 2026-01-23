@@ -1,39 +1,98 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useState, useEffect } from "react";
+import { api, ProjectResponse, ApiException } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
+import { ProjectCard } from "@/components/projects/ProjectCard";
+import { CreateProjectModal } from "@/components/projects/CreateProjectModal";
 
-function ProjectsContent() {
-  const { user, logout } = useAuth();
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<ProjectResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const loadProjects = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await api.getProjects();
+      setProjects(data);
+    } catch (err) {
+      if (err instanceof ApiException) {
+        setError(err.error.message);
+      } else {
+        setError("Failed to load projects");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const handleCreateProject = async (name: string) => {
+    const newProject = await api.createProject({ name });
+    setProjects([newProject, ...projects]);
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await api.deleteProject(id);
+      setProjects(projects.filter((p) => p.id !== id));
+    } catch (err) {
+      if (err instanceof ApiException) {
+        alert(err.error.message);
+      } else {
+        alert("Failed to delete project");
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ink"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          {error}
+          <button
+            onClick={loadProjects}
+            className="ml-4 underline hover:no-underline"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-bg-light">
-      {/* Header */}
-      <header className="bg-paper border-b border-border-light">
-        <div className="container-wide flex items-center justify-between h-16">
-          <span className="text-2xl font-serif font-semibold text-ink">
-            Lorely
-          </span>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-ink/60">{user?.email}</span>
-            <Button variant="ghost" size="sm" onClick={logout}>
-              Logout
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-serif font-semibold text-ink">
+          Your Projects
+        </h1>
+        <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+          Create Project
+        </Button>
+      </div>
 
-      {/* Main Content */}
-      <main className="container-wide py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-serif font-semibold text-ink">
-            Your Projects
-          </h1>
-          <Button variant="primary">Create Project</Button>
-        </div>
-
-        {/* Empty State */}
+      {projects.length === 0 ? (
         <div className="bg-paper rounded-xl border border-border-light p-12 text-center">
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto mb-4">
@@ -57,18 +116,28 @@ function ProjectsContent() {
             <p className="text-ink/60 mb-6">
               Create your first project to start building your world.
             </p>
-            <Button variant="primary">Create Your First Project</Button>
+            <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+              Create Your First Project
+            </Button>
           </div>
         </div>
-      </main>
-    </div>
-  );
-}
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onDelete={handleDeleteProject}
+            />
+          ))}
+        </div>
+      )}
 
-export default function ProjectsPage() {
-  return (
-    <ProtectedRoute>
-      <ProjectsContent />
-    </ProtectedRoute>
+      <CreateProjectModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateProject}
+      />
+    </div>
   );
 }

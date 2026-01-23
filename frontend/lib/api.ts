@@ -44,6 +44,59 @@ export interface UserResponse {
   createdAt: string;
 }
 
+export type EntityType = 'CHARACTER' | 'LOCATION' | 'FACTION' | 'ITEM' | 'EVENT' | 'CHAPTER' | 'CONCEPT';
+
+export interface ProjectResponse {
+  id: string;
+  ownerId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProjectRequest {
+  name: string;
+}
+
+export interface UpdateProjectRequest {
+  name: string;
+}
+
+export interface TagResponse {
+  id: string;
+  projectId: string;
+  name: string;
+  color: string;
+}
+
+export interface CreateTagRequest {
+  name: string;
+  color?: string;
+}
+
+export interface EntityResponse {
+  id: string;
+  projectId: string;
+  type: EntityType;
+  title: string;
+  content: Record<string, unknown>;
+  tags: TagResponse[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEntityRequest {
+  type: EntityType;
+  title: string;
+  content?: Record<string, unknown>;
+}
+
+export interface UpdateEntityRequest {
+  type?: EntityType;
+  title: string;
+  content?: Record<string, unknown>;
+}
+
 class ApiClient {
   private accessToken: string | null = null;
 
@@ -125,6 +178,114 @@ class ApiClient {
   async getMe(): Promise<UserResponse> {
     return this.request<UserResponse>("/me", {
       method: "GET",
+    });
+  }
+
+  // Project endpoints
+  async getProjects(): Promise<ProjectResponse[]> {
+    return this.request<ProjectResponse[]>("/projects", {
+      method: "GET",
+    });
+  }
+
+  async getProject(id: string): Promise<ProjectResponse> {
+    return this.request<ProjectResponse>(`/projects/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async createProject(data: CreateProjectRequest): Promise<ProjectResponse> {
+    return this.request<ProjectResponse>("/projects", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateProject(id: string, data: UpdateProjectRequest): Promise<ProjectResponse> {
+    return this.request<ProjectResponse>(`/projects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteProject(id: string): Promise<void> {
+    return this.request<void>(`/projects/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Entity endpoints
+  async getEntities(projectId: string, type?: EntityType, tagId?: string): Promise<EntityResponse[]> {
+    const params = new URLSearchParams();
+    if (type) params.append("type", type);
+    if (tagId) params.append("tagId", tagId);
+    const queryString = params.toString();
+    return this.request<EntityResponse[]>(`/projects/${projectId}/entities${queryString ? `?${queryString}` : ""}`, {
+      method: "GET",
+    });
+  }
+
+  async searchEntities(projectId: string, query: string): Promise<EntityResponse[]> {
+    return this.request<EntityResponse[]>(`/projects/${projectId}/entities/search?q=${encodeURIComponent(query)}`, {
+      method: "GET",
+    });
+  }
+
+  async getEntity(id: string): Promise<EntityResponse> {
+    return this.request<EntityResponse>(`/entities/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async createEntity(projectId: string, data: CreateEntityRequest): Promise<EntityResponse> {
+    return this.request<EntityResponse>(`/projects/${projectId}/entities`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateEntity(id: string, data: UpdateEntityRequest): Promise<EntityResponse> {
+    return this.request<EntityResponse>(`/entities/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteEntity(id: string): Promise<void> {
+    return this.request<void>(`/entities/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async addTagToEntity(entityId: string, tagId: string): Promise<EntityResponse> {
+    return this.request<EntityResponse>(`/entities/${entityId}/tags/${tagId}`, {
+      method: "POST",
+    });
+  }
+
+  async removeTagFromEntity(entityId: string, tagId: string): Promise<EntityResponse> {
+    return this.request<EntityResponse>(`/entities/${entityId}/tags/${tagId}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Tag endpoints
+  async getTags(projectId: string): Promise<TagResponse[]> {
+    return this.request<TagResponse[]>(`/projects/${projectId}/tags`, {
+      method: "GET",
+    });
+  }
+
+  async createTag(projectId: string, data: CreateTagRequest): Promise<TagResponse> {
+    return this.request<TagResponse>(`/projects/${projectId}/tags`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTag(id: string): Promise<void> {
+    return this.request<void>(`/tags/${id}`, {
+      method: "DELETE",
     });
   }
 }
