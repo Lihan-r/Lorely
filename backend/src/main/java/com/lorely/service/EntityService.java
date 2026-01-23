@@ -66,7 +66,7 @@ public class EntityService {
 
     @Transactional(readOnly = true)
     public WorldEntity getEntityById(UUID entityId) {
-        return entityRepository.findById(entityId)
+        return entityRepository.findByIdWithTags(entityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
     }
 

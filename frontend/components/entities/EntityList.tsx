@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { api, EntityResponse, EntityType, ApiException } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { EntityCard } from "./EntityCard";
@@ -53,6 +54,7 @@ const typeIcons: Record<EntityType, React.ReactNode> = {
 };
 
 export function EntityList({ projectId, type, title, emptyMessage }: EntityListProps) {
+  const router = useRouter();
   const [entities, setEntities] = useState<EntityResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +102,10 @@ export function EntityList({ projectId, type, title, emptyMessage }: EntityListP
         alert("Failed to delete entity");
       }
     }
+  };
+
+  const handleEditEntity = (id: string) => {
+    router.push(`/projects/${projectId}/entities/${id}`);
   };
 
   if (isLoading) {
@@ -159,6 +165,7 @@ export function EntityList({ projectId, type, title, emptyMessage }: EntityListP
             <EntityCard
               key={entity.id}
               entity={entity}
+              onEdit={handleEditEntity}
               onDelete={handleDeleteEntity}
             />
           ))}

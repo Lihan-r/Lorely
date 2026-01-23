@@ -1,58 +1,13 @@
 "use client";
 
-import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "next/navigation";
-import { api, ProjectResponse, ApiException } from "@/lib/api";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { ProjectProvider, useProject } from "@/contexts/ProjectContext";
 import { Sidebar } from "@/components/layout/Sidebar";
 
-interface ProjectContextType {
-  project: ProjectResponse | null;
-  isLoading: boolean;
-  error: string | null;
-  refresh: () => Promise<void>;
-}
-
-const ProjectContext = createContext<ProjectContextType>({
-  project: null,
-  isLoading: true,
-  error: null,
-  refresh: async () => {},
-});
-
-export function useProject() {
-  return useContext(ProjectContext);
-}
-
-export default function ProjectLayout({ children }: { children: React.ReactNode }) {
+function ProjectLayoutContent({ children }: { children: React.ReactNode }) {
   const params = useParams();
   const projectId = params.projectId as string;
-  const [project, setProject] = useState<ProjectResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadProject = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await api.getProject(projectId);
-      setProject(data);
-    } catch (err) {
-      if (err instanceof ApiException) {
-        setError(err.error.message);
-      } else {
-        setError("Failed to load project");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (projectId) {
-      loadProject();
-    }
-  }, [projectId]);
+  const { project, isLoading, error, refresh } = useProject();
 
   if (isLoading) {
     return (
@@ -68,7 +23,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
           <button
-            onClick={loadProject}
+            onClick={refresh}
             className="text-ink underline hover:no-underline"
           >
             Try again
@@ -79,13 +34,22 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <ProjectContext.Provider value={{ project, isLoading, error, refresh: loadProject }}>
-      <div className="h-full flex">
-        <Sidebar projectId={projectId} projectName={project?.name} />
-        <div className="flex-1 overflow-auto">
-          {children}
-        </div>
+    <div className="h-full flex">
+      <Sidebar projectId={projectId} projectName={project?.name} />
+      <div className="flex-1 overflow-auto">
+        {children}
       </div>
-    </ProjectContext.Provider>
+    </div>
+  );
+}
+
+export default function ProjectLayout({ children }: { children: React.ReactNode }) {
+  const params = useParams();
+  const projectId = params.projectId as string;
+
+  return (
+    <ProjectProvider projectId={projectId}>
+      <ProjectLayoutContent>{children}</ProjectLayoutContent>
+    </ProjectProvider>
   );
 }

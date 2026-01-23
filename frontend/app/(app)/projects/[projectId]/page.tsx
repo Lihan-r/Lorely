@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { api, EntityResponse, EntityType, ApiException } from "@/lib/api";
-import { useProject } from "./layout";
+import { useProject } from "@/contexts/ProjectContext";
 import { Button } from "@/components/ui/Button";
 
 const entityTypes: { type: EntityType; label: string; pluralLabel: string }[] = [
