@@ -6,6 +6,7 @@ import Link from "next/link";
 import { api, EntityResponse, EntityType, TagResponse, ApiException } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { TipTapEditor } from "@/components/editor/TipTapEditor";
+import { RelationshipPanel } from "@/components/entities/RelationshipPanel";
 
 const typeLabels: Record<EntityType, string> = {
   CHARACTER: "Character",
@@ -41,20 +42,23 @@ export default function EntityDetailPage() {
   const [editContent, setEditContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [projectTags, setProjectTags] = useState<TagResponse[]>([]);
+  const [allEntities, setAllEntities] = useState<EntityResponse[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const [entityData, tagsData] = await Promise.all([
+        const [entityData, tagsData, entitiesData] = await Promise.all([
           api.getEntity(entityId),
           api.getTags(projectId),
+          api.getEntities(projectId),
         ]);
         setEntity(entityData);
         setEditTitle(entityData.title);
         setEditContent(entityData.content?.text as string || "");
         setProjectTags(tagsData);
+        setAllEntities(entitiesData);
       } catch (err) {
         if (err instanceof ApiException) {
           setError(err.error.message);
@@ -271,6 +275,15 @@ export default function EntityDetailPage() {
             </select>
           )}
         </div>
+      </div>
+
+      {/* Relationships */}
+      <div className="mb-6 bg-paper rounded-xl border border-border-light p-6">
+        <RelationshipPanel
+          entityId={entityId}
+          projectId={projectId}
+          allEntities={allEntities}
+        />
       </div>
 
       {/* Content */}
