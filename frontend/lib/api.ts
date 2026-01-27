@@ -97,6 +97,26 @@ export interface UpdateEntityRequest {
   content?: Record<string, unknown>;
 }
 
+export interface RelationshipResponse {
+  id: string;
+  projectId: string;
+  fromEntityId: string;
+  toEntityId: string;
+  relationType: string;
+  contextEntityId: string | null;
+  createdAt: string;
+  fromEntityTitle?: string;
+  toEntityTitle?: string;
+  contextEntityTitle?: string;
+}
+
+export interface CreateRelationshipRequest {
+  fromEntityId: string;
+  toEntityId: string;
+  relationType: string;
+  contextEntityId?: string;
+}
+
 class ApiClient {
   private accessToken: string | null = null;
 
@@ -285,6 +305,41 @@ class ApiClient {
 
   async deleteTag(id: string): Promise<void> {
     return this.request<void>(`/tags/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Relationship endpoints
+  async getRelationships(projectId: string, type?: string): Promise<RelationshipResponse[]> {
+    const params = new URLSearchParams();
+    if (type) params.append("type", type);
+    const queryString = params.toString();
+    return this.request<RelationshipResponse[]>(`/projects/${projectId}/relationships${queryString ? `?${queryString}` : ""}`, {
+      method: "GET",
+    });
+  }
+
+  async getEntityRelationships(entityId: string): Promise<RelationshipResponse[]> {
+    return this.request<RelationshipResponse[]>(`/entities/${entityId}/relationships`, {
+      method: "GET",
+    });
+  }
+
+  async getRelationship(id: string): Promise<RelationshipResponse> {
+    return this.request<RelationshipResponse>(`/relationships/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async createRelationship(projectId: string, data: CreateRelationshipRequest): Promise<RelationshipResponse> {
+    return this.request<RelationshipResponse>(`/projects/${projectId}/relationships`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteRelationship(id: string): Promise<void> {
+    return this.request<void>(`/relationships/${id}`, {
       method: "DELETE",
     });
   }
