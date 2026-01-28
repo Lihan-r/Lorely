@@ -1,130 +1,105 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import { api, EntityResponse, EntityType, ApiException } from "@/lib/api";
+import { api, EntityType } from "@/lib/api";
 import { useProject } from "@/contexts/ProjectContext";
-import { Button } from "@/components/ui/Button";
 
-const entityTypes: { type: EntityType; label: string; pluralLabel: string }[] = [
-  { type: "CHARACTER", label: "Character", pluralLabel: "Characters" },
-  { type: "LOCATION", label: "Location", pluralLabel: "Locations" },
-  { type: "FACTION", label: "Faction", pluralLabel: "Factions" },
-  { type: "ITEM", label: "Item", pluralLabel: "Items" },
-  { type: "EVENT", label: "Event", pluralLabel: "Events" },
-  { type: "CHAPTER", label: "Chapter", pluralLabel: "Chapters" },
-  { type: "CONCEPT", label: "Concept", pluralLabel: "Concepts" },
+const modeCards = [
+  {
+    key: "plan",
+    title: "Plan",
+    description: "Organize entities & lore",
+    href: (id: string) => `/projects/${id}/plan`,
+    icon: (
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    key: "constellation",
+    title: "Constellation",
+    description: "Visualize your world",
+    href: (id: string) => `/projects/${id}/constellation`,
+    icon: (
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+      </svg>
+    ),
+  },
+  {
+    key: "write",
+    title: "Write",
+    description: "Draft your story",
+    href: (id: string) => `/projects/${id}/write`,
+    icon: (
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+      </svg>
+    ),
+  },
 ];
 
-const typeRoutes: Record<EntityType, string> = {
-  CHARACTER: "characters",
-  LOCATION: "locations",
-  FACTION: "factions",
-  ITEM: "items",
-  EVENT: "events",
-  CHAPTER: "chapters",
-  CONCEPT: "concepts",
-};
-
-export default function ProjectOverviewPage() {
+export default function ProjectDashboardPage() {
   const params = useParams();
-  const router = useRouter();
   const projectId = params.projectId as string;
   const { project } = useProject();
-  const [recentEntities, setRecentEntities] = useState<EntityResponse[]>([]);
-  const [entityCounts, setEntityCounts] = useState<Record<EntityType, number>>({} as Record<EntityType, number>);
+  const [totalEntities, setTotalEntities] = useState(0);
+  const [totalRelationships, setTotalRelationships] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadOverviewData = async () => {
+    const loadStats = async () => {
       try {
         setIsLoading(true);
-        const entities = await api.getEntities(projectId);
-
-        // Get recent entities (last 5)
-        setRecentEntities(entities.slice(0, 5));
-
-        // Count by type
-        const counts = entities.reduce((acc, entity) => {
-          acc[entity.type] = (acc[entity.type] || 0) + 1;
-          return acc;
-        }, {} as Record<EntityType, number>);
-        setEntityCounts(counts);
+        const [entities, relationships] = await Promise.all([
+          api.getEntities(projectId),
+          api.getRelationships(projectId),
+        ]);
+        setTotalEntities(entities.length);
+        setTotalRelationships(relationships.length);
       } catch (err) {
-        console.error("Failed to load overview data", err);
+        console.error("Failed to load stats", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadOverviewData();
+    loadStats();
   }, [projectId]);
 
-  const totalEntities = Object.values(entityCounts).reduce((a, b) => a + b, 0);
-
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-serif font-semibold text-ink mb-2">
-          {project?.name || "Project Overview"}
-        </h1>
-        <p className="text-ink/60">
-          {totalEntities} {totalEntities === 1 ? "entity" : "entities"} in this project
-        </p>
-      </div>
+    <div className="h-full flex items-center justify-center p-8">
+      <div className="max-w-2xl w-full">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-serif font-semibold text-ink mb-2">
+            {project?.name || "Project"}
+          </h1>
+          {!isLoading && (
+            <p className="text-ink/60">
+              {totalEntities} {totalEntities === 1 ? "entity" : "entities"}, {totalRelationships}{" "}
+              {totalRelationships === 1 ? "relationship" : "relationships"}
+            </p>
+          )}
+        </div>
 
-      {/* Entity Type Overview */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        {entityTypes.map(({ type, label, pluralLabel }) => (
-          <Link
-            key={type}
-            href={`/projects/${projectId}/${typeRoutes[type]}`}
-            className="bg-paper rounded-lg border border-border-light p-4 hover:border-ink/20 hover:shadow-sm transition-all"
-          >
-            <div className="text-2xl font-semibold text-ink mb-1">
-              {entityCounts[type] || 0}
-            </div>
-            <div className="text-sm text-ink/60">{pluralLabel}</div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Recent Entities */}
-      <div className="bg-paper rounded-xl border border-border-light p-6">
-        <h2 className="text-lg font-semibold text-ink mb-4">Recent Activity</h2>
-
-        {isLoading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-ink"></div>
-          </div>
-        ) : recentEntities.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-ink/60 mb-4">No entities yet. Start building your world!</p>
-            <Button variant="primary" onClick={() => router.push(`/projects/${projectId}/characters`)}>
-              Create Your First Character
-            </Button>
-          </div>
-        ) : (
-          <ul className="space-y-3">
-            {recentEntities.map((entity) => (
-              <li key={entity.id}>
-                <Link
-                  href={`/projects/${projectId}/entities/${entity.id}`}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-cream/50 transition-colors"
-                >
-                  <div>
-                    <span className="font-medium text-ink">{entity.title}</span>
-                    <span className="ml-2 text-xs text-ink/50">{entity.type.toLowerCase()}</span>
-                  </div>
-                  <span className="text-xs text-ink/40">
-                    {new Date(entity.updatedAt).toLocaleDateString()}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {modeCards.map((mode) => (
+            <Link
+              key={mode.key}
+              href={mode.href(projectId)}
+              className="bg-paper rounded-xl border border-border-light p-6 text-center hover:border-ink/20 hover:shadow-md transition-all group"
+            >
+              <div className="w-14 h-14 bg-cream rounded-full flex items-center justify-center mx-auto mb-4 text-ink/60 group-hover:text-ink transition-colors">
+                {mode.icon}
+              </div>
+              <h2 className="text-lg font-semibold text-ink mb-1">{mode.title}</h2>
+              <p className="text-sm text-ink/60">{mode.description}</p>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -104,7 +104,7 @@ export default function EntityDetailPage() {
 
     try {
       await api.deleteEntity(entityId);
-      router.push(`/projects/${projectId}/${typeRoutes[entity.type]}`);
+      router.push(`/projects/${projectId}/plan/${typeRoutes[entity.type]}`);
     } catch (err) {
       if (err instanceof ApiException) {
         alert(err.error.message);
@@ -150,7 +150,7 @@ export default function EntityDetailPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           {error || "Entity not found"}
           <Link
-            href={`/projects/${projectId}`}
+            href={`/projects/${projectId}/plan`}
             className="ml-4 underline hover:no-underline"
           >
             Back to project
@@ -169,7 +169,7 @@ export default function EntityDetailPage() {
       {/* Breadcrumb */}
       <div className="mb-6">
         <Link
-          href={`/projects/${projectId}/${typeRoutes[entity.type]}`}
+          href={`/projects/${projectId}/plan/${typeRoutes[entity.type]}`}
           className="text-sm text-ink/60 hover:text-ink flex items-center gap-1"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

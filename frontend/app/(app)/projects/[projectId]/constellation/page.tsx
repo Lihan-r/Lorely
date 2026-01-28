@@ -3,9 +3,22 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api, EntityResponse, RelationshipResponse } from "@/lib/api";
-import { WebView } from "@/components/graph/WebView";
+import { ConstellationView } from "@/components/graph/ConstellationView";
 
-export default function WebViewPage() {
+function getEntityTypeColor(type: string): string {
+  const colors: Record<string, string> = {
+    CHARACTER: "#6366f1",
+    LOCATION: "#22c55e",
+    FACTION: "#f59e0b",
+    ITEM: "#ec4899",
+    EVENT: "#8b5cf6",
+    CHAPTER: "#06b6d4",
+    CONCEPT: "#f97316",
+  };
+  return colors[type] || "#6b7280";
+}
+
+export default function ConstellationPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
@@ -46,7 +59,7 @@ export default function WebViewPage() {
 
   const handleViewEntity = () => {
     if (selectedEntityId) {
-      router.push(`/projects/${projectId}/entities/${selectedEntityId}`);
+      router.push(`/projects/${projectId}/plan/entities/${selectedEntityId}`);
     }
   };
 
@@ -77,31 +90,34 @@ export default function WebViewPage() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-6 border-b border-border-light flex items-center justify-between">
+      <div className="shrink-0 px-6 py-4 border-b border-border-light flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-serif font-semibold text-ink">Web View</h1>
+          <h1 className="text-2xl font-serif font-semibold text-ink">Constellation</h1>
           <p className="text-sm text-ink/60 mt-1">
             {entities.length} entities, {relationships.length} relationships
           </p>
         </div>
       </div>
 
-      {/* Graph */}
-      <div className="flex-1 p-6 flex gap-6">
-        <div className="flex-1">
-          <WebView
-            entities={entities}
-            relationships={relationships}
-            onEntityClick={handleEntityClick}
-            selectedEntityId={selectedEntityId}
-          />
+      {/* Graph area */}
+      <div className="flex-1 min-h-0 flex">
+        {/* Graph */}
+        <div className="flex-1 min-w-0 p-4">
+          <div className="w-full h-full relative">
+            <ConstellationView
+              entities={entities}
+              relationships={relationships}
+              onEntityClick={handleEntityClick}
+              selectedEntityId={selectedEntityId}
+            />
+          </div>
         </div>
 
         {/* Side panel for selected entity */}
         {selectedEntity && (
-          <div className="w-80 bg-paper rounded-lg border border-border-light p-4">
+          <div className="w-80 shrink-0 border-l border-border-light bg-paper p-4 overflow-y-auto">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <span
@@ -148,7 +164,7 @@ export default function WebViewPage() {
                           key={rel.id}
                           className="text-sm text-ink/80 flex items-center gap-2"
                         >
-                          <span className="text-ink/40">{isFrom ? "→" : "←"}</span>
+                          <span className="text-ink/40">{isFrom ? "\u2192" : "\u2190"}</span>
                           <span className="text-ink/60">{rel.relationType.replace(/_/g, " ").toLowerCase()}</span>
                           <span className="font-medium">{otherEntity?.title || "Unknown"}</span>
                         </li>
@@ -191,17 +207,4 @@ export default function WebViewPage() {
       </div>
     </div>
   );
-}
-
-function getEntityTypeColor(type: string): string {
-  const colors: Record<string, string> = {
-    CHARACTER: "#6366f1",
-    LOCATION: "#22c55e",
-    FACTION: "#f59e0b",
-    ITEM: "#ec4899",
-    EVENT: "#8b5cf6",
-    CHAPTER: "#06b6d4",
-    CONCEPT: "#f97316",
-  };
-  return colors[type] || "#6b7280";
 }

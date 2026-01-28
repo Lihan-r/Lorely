@@ -76,29 +76,20 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
     return [
       {
         label: "Overview",
-        href: `/projects/${projectId}`,
+        href: `/projects/${projectId}/plan`,
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
           </svg>
         ),
       },
-      {
-        label: "Web View",
-        href: `/projects/${projectId}/web`,
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-          </svg>
-        ),
-      },
-      { label: "Characters", href: `/projects/${projectId}/characters`, icon: entityTypeIcons.CHARACTER, type: "CHARACTER" },
-      { label: "Locations", href: `/projects/${projectId}/locations`, icon: entityTypeIcons.LOCATION, type: "LOCATION" },
-      { label: "Factions", href: `/projects/${projectId}/factions`, icon: entityTypeIcons.FACTION, type: "FACTION" },
-      { label: "Items", href: `/projects/${projectId}/items`, icon: entityTypeIcons.ITEM, type: "ITEM" },
-      { label: "Events", href: `/projects/${projectId}/events`, icon: entityTypeIcons.EVENT, type: "EVENT" },
-      { label: "Chapters", href: `/projects/${projectId}/chapters`, icon: entityTypeIcons.CHAPTER, type: "CHAPTER" },
-      { label: "Concepts", href: `/projects/${projectId}/concepts`, icon: entityTypeIcons.CONCEPT, type: "CONCEPT" },
+      { label: "Characters", href: `/projects/${projectId}/plan/characters`, icon: entityTypeIcons.CHARACTER, type: "CHARACTER" },
+      { label: "Locations", href: `/projects/${projectId}/plan/locations`, icon: entityTypeIcons.LOCATION, type: "LOCATION" },
+      { label: "Factions", href: `/projects/${projectId}/plan/factions`, icon: entityTypeIcons.FACTION, type: "FACTION" },
+      { label: "Items", href: `/projects/${projectId}/plan/items`, icon: entityTypeIcons.ITEM, type: "ITEM" },
+      { label: "Events", href: `/projects/${projectId}/plan/events`, icon: entityTypeIcons.EVENT, type: "EVENT" },
+      { label: "Chapters", href: `/projects/${projectId}/plan/chapters`, icon: entityTypeIcons.CHAPTER, type: "CHAPTER" },
+      { label: "Concepts", href: `/projects/${projectId}/plan/concepts`, icon: entityTypeIcons.CONCEPT, type: "CONCEPT" },
     ];
   };
 
@@ -108,8 +99,8 @@ export function Sidebar({ projectId, projectName }: SidebarProps) {
     if (href === "/projects") {
       return pathname === "/projects";
     }
-    if (href === `/projects/${projectId}`) {
-      return pathname === `/projects/${projectId}`;
+    if (href === `/projects/${projectId}/plan`) {
+      return pathname === `/projects/${projectId}/plan`;
     }
     return pathname.startsWith(href);
   };

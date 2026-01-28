@@ -57,9 +57,9 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="h-full flex">
+    <div className="h-full w-full flex">
       <Sidebar />
-      <main className="flex-1 overflow-auto p-8">
+      <main className="flex-1 overflow-auto min-w-0 p-8">
         {isLoading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ink"></div>

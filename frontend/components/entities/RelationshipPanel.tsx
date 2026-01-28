@@ -198,7 +198,7 @@ export function RelationshipPanel({
                           {getRelationshipLabel(rel.relationType)}
                         </span>
                         <Link
-                          href={`/projects/${projectId}/entities/${rel.toEntityId}`}
+                          href={`/projects/${projectId}/plan/entities/${rel.toEntityId}`}
                           className="font-medium text-ink hover:underline"
                         >
                           {target?.title || rel.toEntityTitle || "Unknown"}
@@ -233,7 +233,7 @@ export function RelationshipPanel({
                     >
                       <div className="flex items-center gap-2">
                         <Link
-                          href={`/projects/${projectId}/entities/${rel.fromEntityId}`}
+                          href={`/projects/${projectId}/plan/entities/${rel.fromEntityId}`}
                           className="font-medium text-ink hover:underline"
                         >
                           {source?.title || rel.fromEntityTitle || "Unknown"}

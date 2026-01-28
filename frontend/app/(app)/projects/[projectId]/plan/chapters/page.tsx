@@ -12,7 +12,7 @@ export default function ChaptersPage() {
       projectId={projectId}
       type="CHAPTER"
       title="Chapters"
-      emptyMessage="No chapters yet. Create chapters to organize your story."
+      emptyMessage="No chapters yet. Outline your story structure."
     />
   );
 }

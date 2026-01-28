@@ -105,7 +105,7 @@ export function EntityList({ projectId, type, title, emptyMessage }: EntityListP
   };
 
   const handleEditEntity = (id: string) => {
-    router.push(`/projects/${projectId}/entities/${id}`);
+    router.push(`/projects/${projectId}/plan/entities/${id}`);
   };
 
   if (isLoading) {

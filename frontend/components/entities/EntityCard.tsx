@@ -40,7 +40,7 @@ export function EntityCard({ entity, onDelete, onEdit }: EntityCardProps) {
   return (
     <div className="bg-paper rounded-lg border border-border-light hover:border-ink/20 hover:shadow-sm transition-all group">
       <Link
-        href={`/projects/${entity.projectId}/entities/${entity.id}`}
+        href={`/projects/${entity.projectId}/plan/entities/${entity.id}`}
         className="block p-4"
       >
         <div className="flex items-start justify-between mb-2">
