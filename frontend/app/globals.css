@@ -4,9 +4,59 @@
 
 @layer base {
   :root {
-    --color-ink: 0 0 0;
-    --color-paper: 255 255 255;
-    --color-cream: 245 241 232;
+    /* Background layers */
+    --bg-deep: 10 13 20;
+    --bg-surface: 15 18 25;
+    --bg-elevated: 22 27 38;
+
+    /* Text */
+    --text-primary: 245 245 240;
+    --text-secondary: 156 163 175;
+    --text-muted: 107 114 128;
+
+    /* Accent (Gold) */
+    --accent: 201 162 39;
+    --accent-hover: 212 175 55;
+    --accent-muted: 139 115 85;
+
+    /* Borders */
+    --border-subtle: 30 36 51;
+    --border-strong: 45 53 72;
+
+    /* Entity colors */
+    --entity-character: 107 140 174;
+    --entity-location: 93 138 102;
+    --entity-faction: 166 124 82;
+    --entity-item: 156 107 122;
+    --entity-event: 124 107 156;
+    --entity-chapter: 90 138 138;
+    --entity-concept: 138 124 82;
+
+    /* shadcn/ui compatible variables */
+    --background: 10 13 20;
+    --foreground: 245 245 240;
+    --card: 15 18 25;
+    --card-foreground: 245 245 240;
+    --popover: 15 18 25;
+    --popover-foreground: 245 245 240;
+    --primary: 201 162 39;
+    --primary-foreground: 10 13 20;
+    --secondary: 22 27 38;
+    --secondary-foreground: 245 245 240;
+    --muted: 22 27 38;
+    --muted-foreground: 156 163 175;
+    --accent: 201 162 39;
+    --accent-foreground: 10 13 20;
+    --destructive: 239 68 68;
+    --destructive-foreground: 245 245 240;
+    --border: 30 36 51;
+    --input: 30 36 51;
+    --ring: 201 162 39;
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: rgb(var(--border));
   }
 
   html {
@@ -14,7 +64,26 @@
   }
 
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-bg-deep text-text-primary antialiased;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--bg-surface));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-strong));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--text-muted));
   }
 }
 
@@ -32,30 +101,30 @@
   }
 }
 
-/* TipTap Editor Styles */
+/* TipTap Editor Styles - Updated for dark theme */
 .ProseMirror {
   @apply outline-none;
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
-  @apply text-ink/30 float-left h-0 pointer-events-none;
+  @apply text-text-muted float-left h-0 pointer-events-none;
   content: attr(data-placeholder);
 }
 
 .ProseMirror h1 {
-  @apply text-2xl font-serif font-semibold mb-4 mt-6;
+  @apply text-2xl font-serif font-semibold mb-4 mt-6 text-text-primary;
 }
 
 .ProseMirror h2 {
-  @apply text-xl font-serif font-semibold mb-3 mt-5;
+  @apply text-xl font-serif font-semibold mb-3 mt-5 text-text-primary;
 }
 
 .ProseMirror h3 {
-  @apply text-lg font-serif font-semibold mb-2 mt-4;
+  @apply text-lg font-serif font-semibold mb-2 mt-4 text-text-primary;
 }
 
 .ProseMirror p {
-  @apply mb-4;
+  @apply mb-4 text-text-primary;
 }
 
 .ProseMirror ul {
@@ -67,11 +136,11 @@
 }
 
 .ProseMirror li {
-  @apply mb-1;
+  @apply mb-1 text-text-primary;
 }
 
 .ProseMirror blockquote {
-  @apply border-l-4 border-ink/20 pl-4 italic text-ink/70 my-4;
+  @apply border-l-4 border-accent-muted pl-4 italic text-text-secondary my-4;
 }
 
 .ProseMirror strong {
@@ -87,11 +156,11 @@
 }
 
 .ProseMirror code {
-  @apply bg-cream px-1 py-0.5 rounded text-sm font-mono;
+  @apply bg-bg-elevated px-1 py-0.5 rounded text-sm font-mono text-accent;
 }
 
 .ProseMirror pre {
-  @apply bg-cream p-4 rounded-lg overflow-x-auto my-4;
+  @apply bg-bg-elevated p-4 rounded-lg overflow-x-auto my-4;
 }
 
 .ProseMirror pre code {
@@ -99,5 +168,27 @@
 }
 
 .ProseMirror hr {
-  @apply border-t border-border-light my-6;
+  @apply border-t border-border-subtle my-6;
+}
+
+/* Starfield background effect for constellation */
+.starfield-bg {
+  background:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.15), transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1px 1px at 160px 30px, rgba(255,255,255,0.12), transparent),
+    radial-gradient(1px 1px at 200px 60px, rgba(255,255,255,0.1), transparent);
+  background-size: 200px 100px;
+  background-color: rgb(var(--bg-deep));
+}
+
+/* Glow effect utility */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+}
+
+.glow-gold-subtle {
+  box-shadow: 0 0 10px rgba(201, 162, 39, 0.15);
 }

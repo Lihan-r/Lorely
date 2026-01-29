@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
-import { EntityResponse, RelationshipResponse } from "@/lib/api";
+import { EntityResponse, RelationshipResponse, LinkResponse } from "@/lib/api";
 import { getRelationshipLabel } from "@/lib/relationshipTypes";
+import { ZoomIn, ZoomOut, Maximize2, RotateCcw, Star } from "lucide-react";
 
 interface ConstellationViewProps {
   entities: EntityResponse[];
   relationships: RelationshipResponse[];
+  links?: LinkResponse[];
   onEntityClick?: (entityId: string) => void;
   selectedEntityId?: string;
+  onStartConnection?: (entityId: string) => void;
 }
 
 interface GraphNode extends d3.SimulationNodeDatum {
@@ -23,16 +26,18 @@ interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
   id: string;
   label: string;
   relationType: string;
+  isLink?: boolean; // true for simple links, false for relationships
 }
 
+// New muted jewel tone colors
 const ENTITY_COLORS: Record<string, string> = {
-  CHARACTER: "#6366f1",
-  LOCATION: "#22c55e",
-  FACTION: "#f59e0b",
-  ITEM: "#ec4899",
-  EVENT: "#8b5cf6",
-  CHAPTER: "#06b6d4",
-  CONCEPT: "#f97316",
+  CHARACTER: "#6b8cae",
+  LOCATION: "#5d8a66",
+  FACTION: "#a67c52",
+  ITEM: "#9c6b7a",
+  EVENT: "#7c6b9c",
+  CHAPTER: "#5a8a8a",
+  CONCEPT: "#8a7c52",
 };
 
 const NODE_RADIUS = 8;
@@ -41,8 +46,10 @@ const SELECTED_RADIUS = 12;
 export function ConstellationView({
   entities,
   relationships,
+  links = [],
   onEntityClick,
   selectedEntityId,
+  onStartConnection,
 }: ConstellationViewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const simulationRef = useRef<d3.Simulation<GraphNode, GraphLink> | null>(null);
@@ -66,9 +73,11 @@ export function ConstellationView({
     const width = canvas.width;
     const height = canvas.height;
     const transform = transformRef.current;
+    const dpr = window.devicePixelRatio || 1;
 
     ctx.clearRect(0, 0, width, height);
     ctx.save();
+    ctx.scale(dpr, dpr);
     ctx.translate(transform.x, transform.y);
     ctx.scale(transform.k, transform.k);
 
@@ -85,15 +94,25 @@ export function ConstellationView({
       ctx.beginPath();
       ctx.moveTo(source.x, source.y);
       ctx.lineTo(target.x, target.y);
-      ctx.strokeStyle = isConnectedToSelected ? "rgba(100, 100, 100, 0.6)" : "rgba(156, 163, 175, 0.3)";
-      ctx.lineWidth = isConnectedToSelected ? 1.5 : 0.8;
+
+      // Dashed line for simple links
+      if (link.isLink) {
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = isConnectedToSelected ? "rgba(201, 162, 39, 0.6)" : "rgba(139, 115, 85, 0.4)";
+        ctx.lineWidth = isConnectedToSelected ? 1.5 : 1;
+      } else {
+        ctx.setLineDash([]);
+        ctx.strokeStyle = isConnectedToSelected ? "rgba(201, 162, 39, 0.6)" : "rgba(107, 114, 128, 0.3)";
+        ctx.lineWidth = isConnectedToSelected ? 1.5 : 0.8;
+      }
       ctx.stroke();
+      ctx.setLineDash([]);
 
       // Edge label
       const midX = (source.x + target.x) / 2;
       const midY = (source.y + target.y) / 2;
       ctx.font = `${10 / transform.k}px system-ui, sans-serif`;
-      ctx.fillStyle = isConnectedToSelected ? "rgba(80, 80, 80, 0.8)" : "rgba(107, 114, 128, 0.5)";
+      ctx.fillStyle = isConnectedToSelected ? "rgba(201, 162, 39, 0.9)" : "rgba(156, 163, 175, 0.6)";
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
       ctx.fillText(link.label, midX, midY - 3 / transform.k);
@@ -110,8 +129,14 @@ export function ConstellationView({
       // Glow effect
       if (isSelected || isHovered) {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, radius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = node.color + "30";
+        ctx.arc(node.x, node.y, radius + 6, 0, Math.PI * 2);
+        const gradient = ctx.createRadialGradient(
+          node.x, node.y, radius,
+          node.x, node.y, radius + 6
+        );
+        gradient.addColorStop(0, isSelected ? "rgba(201, 162, 39, 0.4)" : node.color + "40");
+        gradient.addColorStop(1, "transparent");
+        ctx.fillStyle = gradient;
         ctx.fill();
       }
 
@@ -122,16 +147,21 @@ export function ConstellationView({
       ctx.fill();
 
       // Border
-      ctx.strokeStyle = isSelected ? "#000000" : "#ffffff";
+      ctx.strokeStyle = isSelected ? "#c9a227" : "rgba(245, 245, 240, 0.3)";
       ctx.lineWidth = isSelected ? 2.5 : 1.5;
       ctx.stroke();
 
       // Label
       ctx.font = `${11 / transform.k}px system-ui, sans-serif`;
-      ctx.fillStyle = "#1a1a1a";
+      ctx.fillStyle = "#f5f5f0";
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
+
+      // Text shadow for readability
+      ctx.shadowColor = "rgba(10, 13, 20, 0.8)";
+      ctx.shadowBlur = 4;
       ctx.fillText(node.label, node.x, node.y + radius + 4);
+      ctx.shadowBlur = 0;
     });
 
     ctx.restore();
@@ -158,18 +188,33 @@ export function ConstellationView({
       };
     });
 
-    const links: GraphLink[] = relationships
-      .filter((rel) => entityIds.has(rel.fromEntityId) && entityIds.has(rel.toEntityId))
-      .map((rel) => ({
-        id: rel.id,
-        source: rel.fromEntityId,
-        target: rel.toEntityId,
-        label: getRelationshipLabel(rel.relationType),
-        relationType: rel.relationType,
-      }));
+    const graphLinks: GraphLink[] = [
+      // Add relationships
+      ...relationships
+        .filter((rel) => entityIds.has(rel.fromEntityId) && entityIds.has(rel.toEntityId))
+        .map((rel) => ({
+          id: rel.id,
+          source: rel.fromEntityId,
+          target: rel.toEntityId,
+          label: getRelationshipLabel(rel.relationType),
+          relationType: rel.relationType,
+          isLink: false,
+        })),
+      // Add simple links
+      ...links
+        .filter((link) => entityIds.has(link.fromEntityId) && entityIds.has(link.toEntityId))
+        .map((link) => ({
+          id: link.id,
+          source: link.fromEntityId,
+          target: link.toEntityId,
+          label: link.note || "",
+          relationType: "LINK",
+          isLink: true,
+        })),
+    ];
 
     nodesRef.current = nodes;
-    linksRef.current = links;
+    linksRef.current = graphLinks;
 
     // Create or restart simulation
     if (simulationRef.current) {
@@ -177,14 +222,15 @@ export function ConstellationView({
     }
 
     const canvas = canvasRef.current;
-    const width = canvas?.width || 800;
-    const height = canvas?.height || 600;
+    const rect = canvas?.parentElement?.getBoundingClientRect();
+    const width = rect?.width || 800;
+    const height = rect?.height || 600;
 
     const simulation = d3
       .forceSimulation<GraphNode>(nodes)
       .force(
         "link",
-        d3.forceLink<GraphNode, GraphLink>(links)
+        d3.forceLink<GraphNode, GraphLink>(graphLinks)
           .id((d) => d.id)
           .distance(120)
       )
@@ -194,7 +240,7 @@ export function ConstellationView({
       .alphaDecay(0.02);
 
     simulationRef.current = simulation;
-  }, [entities, relationships]);
+  }, [entities, relationships, links]);
 
   // Canvas setup + interaction
   useEffect(() => {
@@ -209,8 +255,6 @@ export function ConstellationView({
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
-      const ctx = canvas.getContext("2d");
-      if (ctx) ctx.scale(dpr, dpr);
 
       // Update center force
       if (simulationRef.current) {
@@ -308,7 +352,7 @@ export function ConstellationView({
       draggedNodeRef.current.fy = (event.clientY - rect.top - transform.y) / transform.k;
     };
 
-    const handleMouseUp = (event: MouseEvent) => {
+    const handleMouseUp = () => {
       if (draggedNodeRef.current) {
         if (!isDragging) {
           // It was a click, not a drag
@@ -416,52 +460,44 @@ export function ConstellationView({
     <div className="relative w-full h-full min-h-0">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 bg-cream/30 rounded-lg border border-border-light"
+        className="absolute inset-0 starfield-bg rounded-lg border border-border-subtle"
       />
 
       {/* Controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <button
           onClick={handleZoomIn}
-          className="p-2 bg-paper rounded-lg border border-border-light shadow-sm hover:bg-cream transition-colors"
+          className="p-2 bg-bg-surface rounded-lg border border-border-subtle shadow-sm hover:bg-bg-elevated hover:border-border-strong transition-colors"
           title="Zoom In"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-          </svg>
+          <ZoomIn className="w-5 h-5 text-text-secondary" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-2 bg-paper rounded-lg border border-border-light shadow-sm hover:bg-cream transition-colors"
+          className="p-2 bg-bg-surface rounded-lg border border-border-subtle shadow-sm hover:bg-bg-elevated hover:border-border-strong transition-colors"
           title="Zoom Out"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-          </svg>
+          <ZoomOut className="w-5 h-5 text-text-secondary" />
         </button>
         <button
           onClick={handleFit}
-          className="p-2 bg-paper rounded-lg border border-border-light shadow-sm hover:bg-cream transition-colors"
+          className="p-2 bg-bg-surface rounded-lg border border-border-subtle shadow-sm hover:bg-bg-elevated hover:border-border-strong transition-colors"
           title="Fit to View"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-          </svg>
+          <Maximize2 className="w-5 h-5 text-text-secondary" />
         </button>
         <button
           onClick={handleResetLayout}
-          className="p-2 bg-paper rounded-lg border border-border-light shadow-sm hover:bg-cream transition-colors"
+          className="p-2 bg-bg-surface rounded-lg border border-border-subtle shadow-sm hover:bg-bg-elevated hover:border-border-strong transition-colors"
           title="Reset Layout"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
+          <RotateCcw className="w-5 h-5 text-text-secondary" />
         </button>
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-10 bg-paper/90 backdrop-blur-sm rounded-lg border border-border-light p-3 shadow-sm">
-        <h4 className="text-xs font-medium text-ink/60 mb-2">Entity Types</h4>
+      <div className="absolute bottom-4 left-4 z-10 bg-bg-surface/90 backdrop-blur-sm rounded-lg border border-border-subtle p-3 shadow-sm">
+        <h4 className="text-xs font-medium text-text-muted mb-2">Entity Types</h4>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
           {Object.entries(ENTITY_COLORS).map(([type, color]) => (
             <div key={type} className="flex items-center gap-2">
@@ -469,7 +505,7 @@ export function ConstellationView({
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs text-ink/80 capitalize">
+              <span className="text-xs text-text-secondary capitalize">
                 {type.toLowerCase()}
               </span>
             </div>
@@ -480,11 +516,9 @@ export function ConstellationView({
       {/* Empty state */}
       {entities.length === 0 && (
         <div className="absolute inset-0 z-10 flex items-center justify-center">
-          <div className="text-center text-ink/50">
-            <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-            <p className="text-lg font-medium">No entities yet</p>
+          <div className="text-center text-text-muted">
+            <Star className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <p className="text-lg font-medium text-text-secondary">No entities yet</p>
             <p className="text-sm mt-1">Create entities in Plan mode to see them here</p>
           </div>
         </div>

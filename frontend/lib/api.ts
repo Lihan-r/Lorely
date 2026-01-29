@@ -117,6 +117,23 @@ export interface CreateRelationshipRequest {
   contextEntityId?: string;
 }
 
+export interface LinkResponse {
+  id: string;
+  projectId: string;
+  fromEntityId: string;
+  toEntityId: string;
+  note: string | null;
+  createdAt: string;
+  fromEntityTitle?: string;
+  toEntityTitle?: string;
+}
+
+export interface CreateLinkRequest {
+  fromEntityId: string;
+  toEntityId: string;
+  note?: string;
+}
+
 class ApiClient {
   private accessToken: string | null = null;
 
@@ -340,6 +357,32 @@ class ApiClient {
 
   async deleteRelationship(id: string): Promise<void> {
     return this.request<void>(`/relationships/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Link endpoints
+  async getLinks(projectId: string): Promise<LinkResponse[]> {
+    return this.request<LinkResponse[]>(`/projects/${projectId}/links`, {
+      method: "GET",
+    });
+  }
+
+  async getEntityLinks(entityId: string): Promise<LinkResponse[]> {
+    return this.request<LinkResponse[]>(`/entities/${entityId}/links`, {
+      method: "GET",
+    });
+  }
+
+  async createLink(projectId: string, data: CreateLinkRequest): Promise<LinkResponse> {
+    return this.request<LinkResponse>(`/projects/${projectId}/links`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteLink(id: string): Promise<void> {
+    return this.request<void>(`/links/${id}`, {
       method: "DELETE",
     });
   }
