@@ -26,7 +26,7 @@ const pageTransition = {
   type: "tween",
   ease: "easeInOut",
   duration: 0.3,
-};
+} as const;
 
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 interface AppHeaderProps {
   projectId?: string;
@@ -59,6 +60,9 @@ export function AppHeader({ projectId, onSearch }: AppHeaderProps) {
 
       {/* Spacer when no search */}
       {!projectId && <div className="flex-1" />}
+
+      {/* Theme Toggle */}
+      <ThemeToggle />
 
       {/* User Menu */}
       <div className="relative">

@@ -7,7 +7,7 @@ import { PageTransition } from "@/components/animations/PageTransition";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
-      <div className="h-screen flex flex-col bg-bg-light">
+      <div className="h-screen flex flex-col bg-bg-surface">
         <AppHeader />
         <div className="flex flex-1 overflow-hidden">
           <PageTransition>{children}</PageTransition>

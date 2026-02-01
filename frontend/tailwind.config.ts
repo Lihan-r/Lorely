@@ -10,50 +10,61 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Background layers
-        "bg-deep": "#0a0d14",
-        "bg-surface": "#0f1219",
-        "bg-elevated": "#161b26",
+        // Background layers (CSS variables)
+        "bg-deep": "var(--bg-deep)",
+        "bg-surface": "var(--bg-surface)",
+        "bg-elevated": "var(--bg-elevated)",
+        "bg-card": "var(--bg-card)",
+        "bg-card-hover": "var(--bg-card-hover)",
+        "bg-warm": "var(--bg-warm)",
 
         // Text colors
-        "text-primary": "#f5f5f0",
-        "text-secondary": "#9ca3af",
-        "text-muted": "#6b7280",
+        "text-primary": "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
+        "text-muted": "var(--text-muted)",
 
-        // Accent (Gold/Amber)
+        // Accent (Golden hour gold)
         accent: {
-          DEFAULT: "#c9a227",
-          hover: "#d4af37",
-          muted: "#8b7355",
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+          muted: "var(--accent-muted)",
+          glow: "var(--accent-glow)",
         },
 
         // Borders
-        "border-subtle": "#1e2433",
-        "border-strong": "#2d3548",
+        "border-subtle": "var(--border-subtle)",
+        "border-strong": "var(--border-strong)",
 
-        // Entity type colors (desaturated jewel tones)
+        // Entity type colors (warm-adjusted)
         entity: {
-          character: "#6b8cae",
-          location: "#5d8a66",
-          faction: "#a67c52",
-          item: "#9c6b7a",
-          event: "#7c6b9c",
-          chapter: "#5a8a8a",
-          concept: "#8a7c52",
+          character: "var(--entity-character)",
+          location: "var(--entity-location)",
+          faction: "var(--entity-faction)",
+          item: "var(--entity-item)",
+          event: "var(--entity-event)",
+          chapter: "var(--entity-chapter)",
+          concept: "var(--entity-concept)",
         },
 
         // Legacy colors (keeping for gradual migration)
-        ink: "#f5f5f0",
-        paper: "#0a0d14",
-        cream: "#161b26",
-        "bg-light": "#0f1219",
-        "bg-dark": "#0a0d14",
-        "border-light": "#1e2433",
-        "border-dark": "#2d3548",
+        ink: "var(--text-primary)",
+        paper: "var(--bg-deep)",
+        cream: "var(--bg-elevated)",
+        "bg-light": "var(--bg-surface)",
+        "bg-dark": "var(--bg-deep)",
+        "border-light": "var(--border-subtle)",
+        "border-dark": "var(--border-strong)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         serif: ["var(--font-source-serif)", "Georgia", "serif"],
+      },
+      backgroundImage: {
+        // Gradients for sections
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-surface": "var(--gradient-surface)",
+        "gradient-warm": "var(--gradient-warm)",
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
       },
       keyframes: {
         "accordion-down": {
@@ -73,8 +84,8 @@ const config: Config = {
           "50%": { transform: "translateY(-10px)" },
         },
         "golden-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(201, 162, 39, 0.3)" },
-          "50%": { boxShadow: "0 0 40px rgba(201, 162, 39, 0.5)" },
+          "0%, 100%": { boxShadow: "0 0 20px var(--accent-glow)" },
+          "50%": { boxShadow: "0 0 40px var(--accent-glow)" },
         },
         shimmer: {
           "0%": { transform: "translateX(-100%)" },

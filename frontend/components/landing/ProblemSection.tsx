@@ -100,7 +100,7 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="section-padding bg-bg-surface">
+    <section className="section-padding section-surface">
       <div className="container-narrow">
         {/* Section Header */}
         <ScrollReveal className="text-center mb-12 lg:mb-16">

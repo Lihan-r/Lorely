@@ -120,32 +120,41 @@ export function ConstellationHeroBackground() {
 
   if (!mounted) {
     return (
-      <div className="absolute inset-0 overflow-hidden bg-gradient-to-b from-bg-deep via-bg-surface to-bg-deep" />
+      <div className="absolute inset-0 overflow-hidden section-hero" />
     );
   }
 
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 overflow-hidden bg-gradient-to-b from-bg-deep via-bg-surface to-bg-deep"
+      className="absolute inset-0 overflow-hidden section-hero"
     >
-      {/* Nebula glow patches */}
+      {/* Nebula glow patches - theme aware */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-accent/5 blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-entity-event/5 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full bg-entity-character/5 blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+        <div
+          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse"
+          style={{ backgroundColor: "var(--nebula-primary)" }}
+        />
+        <div
+          className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse"
+          style={{ backgroundColor: "var(--nebula-secondary)", animationDelay: "1s" }}
+        />
+        <div
+          className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl animate-pulse"
+          style={{ backgroundColor: "var(--nebula-tertiary)", animationDelay: "2s" }}
+        />
       </div>
 
       {/* Connection lines */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
-        {connections.map(({ from, to, distance }, i) => (
+        {connections.map(({ from, to }, i) => (
           <motion.line
             key={`${from.id}-${to.id}`}
             x1={`${from.x}%`}
             y1={`${from.y}%`}
             x2={`${to.x}%`}
             y2={`${to.y}%`}
-            stroke="rgba(201, 162, 39, 0.15)"
+            stroke="var(--constellation-line)"
             strokeWidth={1}
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{
@@ -167,12 +176,13 @@ export function ConstellationHeroBackground() {
       {stars.map((star) => (
         <motion.div
           key={star.id}
-          className="absolute rounded-full bg-text-primary"
+          className="absolute rounded-full"
           style={{
             left: `${star.x}%`,
             top: `${star.y}%`,
             width: star.size + star.layer * 0.5,
             height: star.size + star.layer * 0.5,
+            backgroundColor: "var(--star-color)",
             x: springX.get() * getParallaxMultiplier(star.layer),
             y: springY.get() * getParallaxMultiplier(star.layer),
           }}
@@ -206,13 +216,14 @@ export function ConstellationHeroBackground() {
       {shootingStars.map((star) => (
         <motion.div
           key={star.id}
-          className="absolute h-0.5 bg-gradient-to-r from-transparent via-text-primary to-accent"
+          className="absolute h-0.5"
           style={{
             left: `${star.startX}%`,
             top: `${star.startY}%`,
             width: 100,
             transformOrigin: "left center",
             rotate: star.angle,
+            background: "linear-gradient(to right, transparent, var(--star-color), var(--accent))",
           }}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: [0, 1, 0], opacity: [0, 1, 0], x: [0, 200, 400] }}
@@ -220,8 +231,14 @@ export function ConstellationHeroBackground() {
         />
       ))}
 
-      {/* Vignette overlay */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-bg-deep/50 pointer-events-none" />
+      {/* Vignette overlay - subtle in light mode */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 0%, var(--bg-deep) 100%)",
+          opacity: 0.3,
+        }}
+      />
     </div>
   );
 }

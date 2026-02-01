@@ -1,3 +1,9 @@
+"use client";
+
+import { ScrollReveal } from "@/components/animations/ScrollReveal";
+import { AnimatedStat } from "@/components/animations/AnimatedCounter";
+import { TestimonialCarousel } from "./TestimonialCarousel";
+
 export function SocialProofSection() {
   const testimonials = [
     {
@@ -20,69 +26,40 @@ export function SocialProofSection() {
     },
   ];
 
+  const stats = [
+    { value: 1000, label: "Worldbuilders" },
+    { value: 50000, label: "Pages Created" },
+    { value: 100000, label: "Connections Made" },
+  ];
+
   return (
-    <section className="section-padding bg-paper">
+    <section className="section-padding section-surface">
       <div className="container-narrow">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
+        <ScrollReveal className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-text-primary">
             Trusted by worldbuilders
           </h2>
-          <p className="mt-4 text-lg text-ink/60">
+          <p className="mt-4 text-lg text-text-secondary">
             Join writers, game designers, and creators who build with Lorely.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Testimonials */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="p-6 rounded-xl bg-bg-light border border-border-light"
-            >
-              {/* Quote */}
-              <blockquote className="text-ink/80 mb-4">
-                &ldquo;{testimonial.quote}&rdquo;
-              </blockquote>
+        {/* Testimonials Carousel */}
+        <ScrollReveal delay={0.2}>
+          <TestimonialCarousel testimonials={testimonials} />
+        </ScrollReveal>
 
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-cream flex items-center justify-center">
-                  <span className="text-sm font-medium text-ink/70">
-                    {testimonial.author[0]}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-medium text-ink text-sm">
-                    {testimonial.author}
-                  </p>
-                  <p className="text-xs text-ink/50">{testimonial.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Stats Placeholder */}
+        {/* Animated Stats */}
         <div className="mt-16 grid grid-cols-3 gap-8 text-center">
-          <div>
-            <p className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
-              1,000+
-            </p>
-            <p className="mt-1 text-sm text-ink/50">Worldbuilders</p>
-          </div>
-          <div>
-            <p className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
-              50,000+
-            </p>
-            <p className="mt-1 text-sm text-ink/50">Pages Created</p>
-          </div>
-          <div>
-            <p className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
-              100,000+
-            </p>
-            <p className="mt-1 text-sm text-ink/50">Connections Made</p>
-          </div>
+          {stats.map((stat, index) => (
+            <AnimatedStat
+              key={stat.label}
+              value={stat.value}
+              label={stat.label}
+              delay={index * 0.15}
+            />
+          ))}
         </div>
       </div>
     </section>

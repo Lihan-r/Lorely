@@ -3,60 +3,149 @@
 @tailwind utilities;
 
 @layer base {
+  /* ========================================
+     LIGHT MODE (Dawn → Golden Hour)
+     ======================================== */
   :root {
-    /* Background layers */
-    --bg-deep: 10 13 20;
-    --bg-surface: 15 18 25;
-    --bg-elevated: 22 27 38;
+    /* Solid backgrounds */
+    --bg-deep: #faf6f0;
+    --bg-surface: #f5ebe0;
+    --bg-elevated: #fffbf5;
+    --bg-card: #fffbf5;
+    --bg-card-hover: #fff8ed;
+    --bg-warm: #f5e6d8;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, #faf6f0 0%, #f5ebe0 100%);
+    --gradient-surface: linear-gradient(180deg, #f5ebe0 0%, #efe4d4 100%);
+    --gradient-warm: linear-gradient(180deg, #f5e6d8 0%, #ffe8d0 100%);
 
     /* Text */
-    --text-primary: 245 245 240;
-    --text-secondary: 156 163 175;
-    --text-muted: 107 114 128;
+    --text-primary: #2c1810;
+    --text-secondary: #5a4a3a;
+    --text-muted: #8a7a6a;
 
-    /* Accent (Gold) */
-    --accent: 201 162 39;
-    --accent-hover: 212 175 55;
-    --accent-muted: 139 115 85;
+    /* Accent (Rich amber) */
+    --accent: #c4880d;
+    --accent-hover: #a87000;
+    --accent-muted: #d4a855;
+    --accent-glow: rgba(196, 136, 13, 0.3);
 
     /* Borders */
-    --border-subtle: 30 36 51;
-    --border-strong: 45 53 72;
+    --border-subtle: rgba(44, 24, 16, 0.1);
+    --border-strong: rgba(44, 24, 16, 0.2);
 
-    /* Entity colors */
-    --entity-character: 107 140 174;
-    --entity-location: 93 138 102;
-    --entity-faction: 166 124 82;
-    --entity-item: 156 107 122;
-    --entity-event: 124 107 156;
-    --entity-chapter: 90 138 138;
-    --entity-concept: 138 124 82;
+    /* Entity colors (warm-adjusted) */
+    --entity-character: #7a9cb8;
+    --entity-location: #6b9a74;
+    --entity-faction: #b8864a;
+    --entity-item: #a8707a;
+    --entity-event: #8a78a8;
+    --entity-chapter: #5a9a9a;
+    --entity-concept: #9a8a5a;
+
+    /* Nebula/glow colors for backgrounds */
+    --nebula-primary: rgba(196, 136, 13, 0.08);
+    --nebula-secondary: rgba(138, 120, 168, 0.06);
+    --nebula-tertiary: rgba(122, 156, 184, 0.06);
+
+    /* Star/sparkle color */
+    --star-color: rgba(44, 24, 16, 0.3);
+    --constellation-line: rgba(196, 136, 13, 0.2);
 
     /* shadcn/ui compatible variables */
-    --background: 10 13 20;
-    --foreground: 245 245 240;
-    --card: 15 18 25;
-    --card-foreground: 245 245 240;
-    --popover: 15 18 25;
-    --popover-foreground: 245 245 240;
-    --primary: 201 162 39;
-    --primary-foreground: 10 13 20;
-    --secondary: 22 27 38;
-    --secondary-foreground: 245 245 240;
-    --muted: 22 27 38;
-    --muted-foreground: 156 163 175;
-    --accent: 201 162 39;
-    --accent-foreground: 10 13 20;
-    --destructive: 239 68 68;
-    --destructive-foreground: 245 245 240;
-    --border: 30 36 51;
-    --input: 30 36 51;
-    --ring: 201 162 39;
+    --background: #faf6f0;
+    --foreground: #2c1810;
+    --card: #fffbf5;
+    --card-foreground: #2c1810;
+    --popover: #fffbf5;
+    --popover-foreground: #2c1810;
+    --primary: #c4880d;
+    --primary-foreground: #fffbf5;
+    --secondary: #f5ebe0;
+    --secondary-foreground: #2c1810;
+    --muted: #f5ebe0;
+    --muted-foreground: #5a4a3a;
+    --destructive: #dc2626;
+    --destructive-foreground: #fffbf5;
+    --border: rgba(44, 24, 16, 0.1);
+    --input: rgba(44, 24, 16, 0.1);
+    --ring: #c4880d;
     --radius: 0.5rem;
   }
 
+  /* ========================================
+     DARK MODE (Night → Pre-dawn)
+     ======================================== */
+  .dark {
+    /* Solid backgrounds */
+    --bg-deep: #0c0f1a;
+    --bg-surface: #12141f;
+    --bg-elevated: #1e1a2e;
+    --bg-card: #1a1625;
+    --bg-card-hover: #241e30;
+    --bg-warm: #1a1520;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, #0c0f1a 0%, #1a1525 100%);
+    --gradient-surface: linear-gradient(180deg, #12141f 0%, #1f1628 100%);
+    --gradient-warm: linear-gradient(180deg, #1a1520 0%, #2a1a1a 100%);
+
+    /* Text */
+    --text-primary: #f5f0e6;
+    --text-secondary: #b8a89a;
+    --text-muted: #7a6f65;
+
+    /* Accent (Golden hour gold) */
+    --accent: #d4a244;
+    --accent-hover: #e8b84a;
+    --accent-muted: #9a7a3a;
+    --accent-glow: rgba(212, 162, 68, 0.3);
+
+    /* Borders */
+    --border-subtle: rgba(212, 162, 68, 0.1);
+    --border-strong: rgba(212, 162, 68, 0.2);
+
+    /* Entity colors (warm-adjusted) */
+    --entity-character: #7a9cb8;
+    --entity-location: #6b9a74;
+    --entity-faction: #b8864a;
+    --entity-item: #a8707a;
+    --entity-event: #8a78a8;
+    --entity-chapter: #5a9a9a;
+    --entity-concept: #9a8a5a;
+
+    /* Nebula/glow colors for backgrounds */
+    --nebula-primary: rgba(212, 162, 68, 0.05);
+    --nebula-secondary: rgba(138, 120, 168, 0.05);
+    --nebula-tertiary: rgba(122, 156, 184, 0.05);
+
+    /* Star/sparkle color */
+    --star-color: rgba(245, 240, 230, 0.8);
+    --constellation-line: rgba(212, 162, 68, 0.15);
+
+    /* shadcn/ui compatible variables */
+    --background: #0c0f1a;
+    --foreground: #f5f0e6;
+    --card: #1a1625;
+    --card-foreground: #f5f0e6;
+    --popover: #1a1625;
+    --popover-foreground: #f5f0e6;
+    --primary: #d4a244;
+    --primary-foreground: #0c0f1a;
+    --secondary: #1e1a2e;
+    --secondary-foreground: #f5f0e6;
+    --muted: #1e1a2e;
+    --muted-foreground: #b8a89a;
+    --destructive: #ef4444;
+    --destructive-foreground: #f5f0e6;
+    --border: rgba(212, 162, 68, 0.1);
+    --input: rgba(212, 162, 68, 0.1);
+    --ring: #d4a244;
+  }
+
   * {
-    border-color: rgb(var(--border));
+    border-color: var(--border);
   }
 
   html {
@@ -64,26 +153,28 @@
   }
 
   body {
-    @apply bg-bg-deep text-text-primary antialiased;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    @apply antialiased;
   }
 
-  /* Custom scrollbar for dark theme */
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: rgb(var(--bg-surface));
+    background: var(--bg-surface);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgb(var(--border-strong));
+    background: var(--border-strong);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--text-muted));
+    background: var(--text-muted);
   }
 }
 
@@ -99,32 +190,50 @@
   .section-padding {
     @apply py-16 sm:py-20 lg:py-24;
   }
+
+  /* Gradient section backgrounds */
+  .section-hero {
+    background: var(--gradient-hero);
+  }
+
+  .section-surface {
+    background: var(--gradient-surface);
+  }
+
+  .section-warm {
+    background: var(--gradient-warm);
+  }
 }
 
-/* TipTap Editor Styles - Updated for dark theme */
+/* TipTap Editor Styles */
 .ProseMirror {
   @apply outline-none;
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
-  @apply text-text-muted float-left h-0 pointer-events-none;
+  color: var(--text-muted);
+  @apply float-left h-0 pointer-events-none;
   content: attr(data-placeholder);
 }
 
 .ProseMirror h1 {
-  @apply text-2xl font-serif font-semibold mb-4 mt-6 text-text-primary;
+  color: var(--text-primary);
+  @apply text-2xl font-serif font-semibold mb-4 mt-6;
 }
 
 .ProseMirror h2 {
-  @apply text-xl font-serif font-semibold mb-3 mt-5 text-text-primary;
+  color: var(--text-primary);
+  @apply text-xl font-serif font-semibold mb-3 mt-5;
 }
 
 .ProseMirror h3 {
-  @apply text-lg font-serif font-semibold mb-2 mt-4 text-text-primary;
+  color: var(--text-primary);
+  @apply text-lg font-serif font-semibold mb-2 mt-4;
 }
 
 .ProseMirror p {
-  @apply mb-4 text-text-primary;
+  color: var(--text-primary);
+  @apply mb-4;
 }
 
 .ProseMirror ul {
@@ -136,11 +245,14 @@
 }
 
 .ProseMirror li {
-  @apply mb-1 text-text-primary;
+  color: var(--text-primary);
+  @apply mb-1;
 }
 
 .ProseMirror blockquote {
-  @apply border-l-4 border-accent-muted pl-4 italic text-text-secondary my-4;
+  border-left-color: var(--accent-muted);
+  color: var(--text-secondary);
+  @apply border-l-4 pl-4 italic my-4;
 }
 
 .ProseMirror strong {
@@ -156,11 +268,14 @@
 }
 
 .ProseMirror code {
-  @apply bg-bg-elevated px-1 py-0.5 rounded text-sm font-mono text-accent;
+  background-color: var(--bg-elevated);
+  color: var(--accent);
+  @apply px-1 py-0.5 rounded text-sm font-mono;
 }
 
 .ProseMirror pre {
-  @apply bg-bg-elevated p-4 rounded-lg overflow-x-auto my-4;
+  background-color: var(--bg-elevated);
+  @apply p-4 rounded-lg overflow-x-auto my-4;
 }
 
 .ProseMirror pre code {
@@ -168,27 +283,40 @@
 }
 
 .ProseMirror hr {
-  @apply border-t border-border-subtle my-6;
+  border-top-color: var(--border-subtle);
+  @apply my-6;
 }
 
 /* Starfield background effect for constellation */
 .starfield-bg {
   background:
-    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), transparent),
-    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.1), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.15), transparent),
-    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.1), transparent),
-    radial-gradient(1px 1px at 160px 30px, rgba(255,255,255,0.12), transparent),
-    radial-gradient(1px 1px at 200px 60px, rgba(255,255,255,0.1), transparent);
+    radial-gradient(2px 2px at 20px 30px, var(--star-color), transparent),
+    radial-gradient(2px 2px at 40px 70px, var(--star-color), transparent),
+    radial-gradient(1px 1px at 90px 40px, var(--star-color), transparent),
+    radial-gradient(2px 2px at 130px 80px, var(--star-color), transparent),
+    radial-gradient(1px 1px at 160px 30px, var(--star-color), transparent),
+    radial-gradient(1px 1px at 200px 60px, var(--star-color), transparent);
   background-size: 200px 100px;
-  background-color: rgb(var(--bg-deep));
+  background-color: var(--bg-deep);
 }
 
 /* Glow effect utility */
 .glow-gold {
-  box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .glow-gold-subtle {
-  box-shadow: 0 0 10px rgba(201, 162, 39, 0.15);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Theme transition - smooth color transitions */
+* {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Disable transitions on theme change to avoid flash */
+.no-transitions * {
+  transition: none !important;
 }

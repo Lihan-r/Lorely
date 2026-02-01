@@ -21,7 +21,7 @@ export function FeaturesSection() {
       y: 0,
       rotateX: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 15,
         delay: i * 0.15,
@@ -30,7 +30,7 @@ export function FeaturesSection() {
   };
 
   return (
-    <section id="features" className="section-padding bg-bg-deep">
+    <section id="features" className="section-padding section-hero">
       <div className="container-narrow">
         {/* Section Header */}
         <ScrollReveal className="text-center mb-12 lg:mb-16">
