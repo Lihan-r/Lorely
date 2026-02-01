@@ -31,6 +31,10 @@ const config: Config = {
           glow: "var(--accent-glow)",
         },
 
+        // Button colors (warm rose/coral)
+        "btn-primary": "var(--btn-primary)",
+        "btn-hover": "var(--btn-hover)",
+
         // Borders
         "border-subtle": "var(--border-subtle)",
         "border-strong": "var(--border-strong)",
@@ -64,6 +68,7 @@ const config: Config = {
         "gradient-hero": "var(--gradient-hero)",
         "gradient-surface": "var(--gradient-surface)",
         "gradient-warm": "var(--gradient-warm)",
+        "gradient-footer": "var(--gradient-footer)",
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
       },
       keyframes: {

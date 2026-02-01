@@ -25,7 +25,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-bg-light border-t border-border-light">
+    <footer className="section-footer">
       <div className="container-wide section-padding">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
@@ -122,7 +122,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-border-light">
+        <div className="mt-12 pt-8 border-t border-border-subtle">
           <p className="text-sm text-ink/50 text-center">
             &copy; {currentYear} Lorely. All rights reserved.
           </p>
