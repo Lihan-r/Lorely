@@ -1,4 +1,21 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { ScrollReveal } from "@/components/animations/ScrollReveal";
+
+// Scattered positions for initial state (rotation, x offset, y offset, scale)
+const scatteredStates = [
+  { rotate: -5, x: -30, y: 20, scale: 0.95 },
+  { rotate: 4, x: 25, y: -15, scale: 1.02 },
+  { rotate: -3, x: -20, y: -25, scale: 0.98 },
+  { rotate: 6, x: 35, y: 15, scale: 1.05 },
+];
+
 export function ProblemSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
   const painPoints = [
     {
       icon: (
@@ -83,34 +100,67 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="section-padding bg-paper">
+    <section className="section-padding bg-bg-surface">
       <div className="container-narrow">
         {/* Section Header */}
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
+        <ScrollReveal className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-text-primary">
             Tired of scattered notes and lost lore?
           </h2>
-          <p className="mt-4 text-lg text-ink/60 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
             Worldbuilding is complex. Your tools shouldn&apos;t make it harder.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Pain Points Grid */}
-        <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
-          {painPoints.map((point, index) => (
-            <div
-              key={index}
-              className="p-6 rounded-xl bg-bg-light border border-border-light hover:border-ink/20 transition-colors"
-            >
-              <div className="w-12 h-12 rounded-lg bg-cream flex items-center justify-center text-ink/70 mb-4">
-                {point.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-ink mb-2">
-                {point.title}
-              </h3>
-              <p className="text-ink/60">{point.description}</p>
-            </div>
-          ))}
+        {/* Pain Points Grid - Scattered to Organized */}
+        <div ref={containerRef} className="grid sm:grid-cols-2 gap-6 lg:gap-8">
+          {painPoints.map((point, index) => {
+            const scattered = scatteredStates[index];
+            return (
+              <motion.div
+                key={index}
+                initial={{
+                  opacity: 0,
+                  rotate: scattered.rotate,
+                  x: scattered.x,
+                  y: scattered.y,
+                  scale: scattered.scale,
+                }}
+                animate={
+                  isInView
+                    ? { opacity: 1, rotate: 0, x: 0, y: 0, scale: 1 }
+                    : {
+                        opacity: 0,
+                        rotate: scattered.rotate,
+                        x: scattered.x,
+                        y: scattered.y,
+                        scale: scattered.scale,
+                      }
+                }
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: index * 0.1,
+                }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="p-6 rounded-xl bg-bg-elevated border border-border-subtle hover:border-accent/30 transition-colors"
+              >
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
+                  transition={{ delay: index * 0.1 + 0.3, duration: 0.4 }}
+                  className="w-12 h-12 rounded-lg bg-bg-surface border border-border-subtle flex items-center justify-center text-text-secondary mb-4"
+                >
+                  {point.icon}
+                </motion.div>
+                <h3 className="text-lg font-semibold text-text-primary mb-2">
+                  {point.title}
+                </h3>
+                <p className="text-text-secondary">{point.description}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

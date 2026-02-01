@@ -1,131 +1,169 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { ScrollReveal } from "@/components/animations/ScrollReveal";
+import {
+  WebViewDemo,
+  WriteDemo,
+  MentionsDemo,
+  FlexiblePagesDemo,
+} from "./FeatureMiniDemo";
+
 export function FeaturesSection() {
-  const features = [
-    {
-      icon: (
-        <svg
-          className="w-8 h-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-          />
-        </svg>
-      ),
-      title: "Web View",
-      description:
-        "See how all your pages connect in a beautiful, interactive graph. Discover relationships you didn't know existed.",
-      badge: "Visual",
-    },
-    {
-      icon: (
-        <svg
-          className="w-8 h-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-          />
-        </svg>
-      ),
-      title: "Write Drawer",
-      description:
-        "A distraction-free writing space that slides out when you need it. Focus on your prose while staying connected to your world.",
-      badge: "Writing",
-    },
-    {
-      icon: (
-        <svg
-          className="w-8 h-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-          />
-        </svg>
-      ),
-      title: "@Mentions",
-      description:
-        "Reference any character, place, or item with a simple @mention. Instant links keep your lore connected and accessible.",
-      badge: "Linking",
-    },
-    {
-      icon: (
-        <svg
-          className="w-8 h-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-          />
-        </svg>
-      ),
-      title: "Flexible Pages",
-      description:
-        "Create any type of page: characters, locations, items, factions, events. Structure your world however makes sense to you.",
-      badge: "Organization",
-    },
-  ];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30, rotateX: 10 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: i * 0.15,
+      },
+    }),
+  };
 
   return (
-    <section id="features" className="section-padding bg-cream/30">
+    <section id="features" className="section-padding bg-bg-deep">
       <div className="container-narrow">
         {/* Section Header */}
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-ink">
+        <ScrollReveal className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-text-primary">
             Everything connected. Nothing lost.
           </h2>
-          <p className="mt-4 text-lg text-ink/60 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
             Lorely gives you the tools to build, connect, and write in one calm
             workspace.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="relative p-8 rounded-2xl bg-paper border border-border-light shadow-sm hover:shadow-md transition-shadow"
-            >
-              {/* Badge */}
-              <span className="absolute top-6 right-6 text-xs font-medium px-2 py-1 rounded-full bg-cream text-ink/70">
-                {feature.badge}
+        {/* Bento Grid */}
+        <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+          {/* Web View - Large card spanning 2 rows */}
+          <motion.div
+            custom={0}
+            variants={cardVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="md:col-span-2 md:row-span-2 relative rounded-2xl bg-bg-elevated border border-border-subtle overflow-hidden group"
+            style={{ perspective: 1000 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="p-6 lg:p-8">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-accent/20 text-accent">
+                Visual
               </span>
-
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-ink flex items-center justify-center text-paper mb-6">
-                {feature.icon}
-              </div>
-
-              {/* Content */}
-              <h3 className="text-xl font-semibold text-ink mb-3">
-                {feature.title}
+              <h3 className="text-xl lg:text-2xl font-semibold text-text-primary mt-4 mb-2">
+                Constellation View
               </h3>
-              <p className="text-ink/60 leading-relaxed">
-                {feature.description}
+              <p className="text-text-secondary max-w-md">
+                See how all your pages connect in a beautiful, interactive graph.
+                Discover relationships you didn&apos;t know existed.
               </p>
             </div>
-          ))}
+            <div className="px-6 pb-6 lg:px-8 lg:pb-8 h-48 lg:h-64">
+              <div className="w-full h-full rounded-xl bg-bg-surface border border-border-subtle overflow-hidden">
+                <WebViewDemo />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Write Drawer */}
+          <motion.div
+            custom={1}
+            variants={cardVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="relative rounded-2xl bg-bg-elevated border border-border-subtle overflow-hidden group"
+            style={{ perspective: 1000 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-entity-character/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="p-6">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-entity-character/20 text-entity-character">
+                Writing
+              </span>
+              <h3 className="text-lg font-semibold text-text-primary mt-4 mb-2">
+                Write Drawer
+              </h3>
+              <p className="text-text-secondary text-sm">
+                Distraction-free writing that stays connected to your world.
+              </p>
+            </div>
+            <div className="px-6 pb-6">
+              <div className="rounded-lg bg-bg-surface border border-border-subtle overflow-hidden">
+                <WriteDemo />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* @Mentions */}
+          <motion.div
+            custom={2}
+            variants={cardVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            whileHover={{ scale: 1.02, y: -5 }}
+            className="relative rounded-2xl bg-bg-elevated border border-border-subtle overflow-hidden group"
+            style={{ perspective: 1000 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-entity-location/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="p-6">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-entity-location/20 text-entity-location">
+                Linking
+              </span>
+              <h3 className="text-lg font-semibold text-text-primary mt-4 mb-2">
+                @Mentions
+              </h3>
+              <p className="text-text-secondary text-sm">
+                Reference any entity with a simple @mention.
+              </p>
+            </div>
+            <div className="px-6 pb-6">
+              <div className="rounded-lg bg-bg-surface border border-border-subtle overflow-hidden">
+                <MentionsDemo />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Flexible Pages - Full width */}
+          <motion.div
+            custom={3}
+            variants={cardVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            whileHover={{ scale: 1.01, y: -3 }}
+            className="md:col-span-3 relative rounded-2xl bg-bg-elevated border border-border-subtle overflow-hidden group"
+            style={{ perspective: 1000 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-entity-faction/5 via-transparent to-entity-event/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1">
+                <span className="text-xs font-medium px-2 py-1 rounded-full bg-entity-faction/20 text-entity-faction">
+                  Organization
+                </span>
+                <h3 className="text-lg font-semibold text-text-primary mt-4 mb-2">
+                  Flexible Pages
+                </h3>
+                <p className="text-text-secondary text-sm max-w-md">
+                  Create any type of page: characters, locations, items, factions, events.
+                  Structure your world however makes sense to you.
+                </p>
+              </div>
+              <div className="flex-shrink-0 w-full md:w-auto">
+                <div className="rounded-lg bg-bg-surface border border-border-subtle overflow-hidden">
+                  <FlexiblePagesDemo />
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

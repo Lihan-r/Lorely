@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { api, EntityResponse, EntityType, ApiException } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { EntityCard } from "./EntityCard";
 import { CreateEntityModal } from "./CreateEntityModal";
+import { SkeletonGrid } from "@/components/ui/Skeleton";
 
 interface EntityListProps {
   projectId: string;
@@ -111,9 +113,11 @@ export function EntityList({ projectId, type, title, emptyMessage }: EntityListP
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ink"></div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-8 w-32 bg-bg-elevated rounded animate-pulse" />
+          <div className="h-9 w-28 bg-bg-elevated rounded animate-pulse" />
         </div>
+        <SkeletonGrid count={6} type="entity" />
       </div>
     );
   }
@@ -146,25 +150,49 @@ export function EntityList({ projectId, type, title, emptyMessage }: EntityListP
       </div>
 
       {entities.length === 0 ? (
-        <div className="bg-paper rounded-xl border border-border-light p-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-paper rounded-xl border border-border-light p-12 text-center"
+        >
           <div className="max-w-sm mx-auto">
-            <div className="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto mb-4 text-ink/40">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto mb-4 text-ink/40"
+            >
               {type ? typeIcons[type] : typeIcons.CHARACTER}
-            </div>
-            <p className="text-ink/60 mb-6">{emptyMessage}</p>
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-ink/60 mb-6"
+            >
+              {emptyMessage}
+            </motion.p>
             {type && (
-              <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-                Create First {title.slice(0, -1)}
-              </Button>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+                  Create First {title.slice(0, -1)}
+                </Button>
+              </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {entities.map((entity) => (
+          {entities.map((entity, index) => (
             <EntityCard
               key={entity.id}
               entity={entity}
+              index={index}
               onEdit={handleEditEntity}
               onDelete={handleDeleteEntity}
             />

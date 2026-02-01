@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/lorely
     username: postgres
-    password: ${DB_PASSWORD:your-password-here}
+    password: '!Nysu1726'
 
   jpa:
     show-sql: true

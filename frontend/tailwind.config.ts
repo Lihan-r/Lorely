@@ -64,10 +64,36 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "star-twinkle": {
+          "0%, 100%": { opacity: "0.3" },
+          "50%": { opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "golden-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(201, 162, 39, 0.3)" },
+          "50%": { boxShadow: "0 0 40px rgba(201, 162, 39, 0.5)" },
+        },
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        "shooting-star": {
+          "0%": { transform: "translateX(0) translateY(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": { transform: "translateX(300px) translateY(300px)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "star-twinkle": "star-twinkle 3s ease-in-out infinite",
+        float: "float 4s ease-in-out infinite",
+        "golden-glow": "golden-glow 2s ease-in-out infinite",
+        shimmer: "shimmer 1.5s infinite",
+        "shooting-star": "shooting-star 1s ease-out forwards",
       },
     },
   },
