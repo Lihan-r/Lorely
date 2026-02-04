@@ -19,7 +19,8 @@
     --gradient-hero: linear-gradient(180deg, #faf6f0 0%, #f5ebe0 100%);
     --gradient-surface: linear-gradient(180deg, #f5ebe0 0%, #f0e4d4 100%);
     --gradient-warm: linear-gradient(180deg, #f0e4d4 0%, #ede0cc 100%);
-    --gradient-footer: linear-gradient(180deg, #ede0cc 0%, #e8dac5 100%);
+    --gradient-warm-mid: linear-gradient(180deg, #ede0cc 0%, #e8dac5 100%);
+    --gradient-footer: linear-gradient(180deg, #e8dac5 0%, #e3d4bb 100%);
 
     /* Button colors (separate from accent) */
     --btn-primary: #b86858;
@@ -95,7 +96,8 @@
     --gradient-hero: linear-gradient(180deg, #0c0f1a 0%, #14121f 100%);
     --gradient-surface: linear-gradient(180deg, #14121f 0%, #1a1520 100%);
     --gradient-warm: linear-gradient(180deg, #1a1520 0%, #251a1a 100%);
-    --gradient-footer: linear-gradient(180deg, #251a1a 0%, #1f1515 100%);
+    --gradient-warm-mid: linear-gradient(180deg, #251a1a 0%, #2a1d1d 100%);
+    --gradient-footer: linear-gradient(180deg, #2a1d1d 0%, #1f1515 100%);
 
     /* Button colors (separate from accent) */
     --btn-primary: #c77a6a;
@@ -212,6 +214,10 @@
 
   .section-warm {
     background: var(--gradient-warm);
+  }
+
+  .section-warm-mid {
+    background: var(--gradient-warm-mid);
   }
 
   .section-footer {

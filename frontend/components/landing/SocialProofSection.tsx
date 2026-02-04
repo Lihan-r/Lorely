@@ -33,7 +33,7 @@ export function SocialProofSection() {
   ];
 
   return (
-    <section className="section-padding section-surface">
+    <section className="section-padding section-warm-mid">
       <div className="container-narrow">
         {/* Section Header */}
         <ScrollReveal className="text-center mb-12">
