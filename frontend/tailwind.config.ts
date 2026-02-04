@@ -60,7 +60,7 @@ const config: Config = {
         "border-dark": "var(--border-strong)",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
         serif: ["var(--font-source-serif)", "Georgia", "serif"],
       },
       backgroundImage: {

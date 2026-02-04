@@ -101,7 +101,7 @@ function Starfield() {
 
 export function CTASection() {
   return (
-    <section className="relative section-padding section-warm text-text-primary overflow-hidden">
+    <section className="relative section-padding section-warm-mid text-text-primary overflow-hidden">
       {/* Starfield background */}
       <Starfield />
 

@@ -104,7 +104,7 @@ export function WebViewDemo() {
 export function WriteDemo() {
   const [typedText, setTypedText] = useState("");
   const [cursorVisible, setCursorVisible] = useState(true);
-  const fullText = "met @Elara at the";
+  const fullText = "met @Elara at the tavern";
 
   useEffect(() => {
     let index = 0;
@@ -132,20 +132,19 @@ export function WriteDemo() {
 
   // Split text to highlight @mention
   const renderText = () => {
-    const mentionMatch = typedText.match(/(@\w+)/);
-    if (mentionMatch) {
-      const parts = typedText.split(/(@\w+)/);
-      return parts.map((part, i) => (
-        part.startsWith("@") ? (
-          <span key={i} className="text-accent font-medium bg-accent/10 px-0.5 rounded">
-            {part}
-          </span>
-        ) : (
-          <span key={i}>{part}</span>
-        )
-      ));
-    }
-    return typedText;
+    if (!typedText) return null;
+
+    const parts = typedText.split(/(@\w+)/);
+    return parts.map((part, i) => {
+      if (!part) return null;
+      return part.startsWith("@") ? (
+        <span key={i} className="text-accent font-medium bg-accent/10 px-0.5 rounded">
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      );
+    });
   };
 
   return (
@@ -181,9 +180,9 @@ export function WriteDemo() {
           <div className="h-3 w-full bg-text-muted/15 rounded mb-1.5" />
           <div className="h-3 w-2/3 bg-text-muted/15 rounded mb-2" />
 
-          {/* Active typing line */}
-          <div className="flex items-center">
-            <span className="text-text-secondary">The hero </span>
+          {/* Active typing line - wrap in flex with proper spacing */}
+          <div className="flex items-center flex-wrap">
+            <span className="text-text-secondary">The hero&nbsp;</span>
             {renderText()}
             <motion.span
               animate={{ opacity: cursorVisible ? 1 : 0 }}

@@ -41,13 +41,13 @@
     --border-subtle: rgba(44, 24, 16, 0.1);
     --border-strong: rgba(44, 24, 16, 0.2);
 
-    /* Entity colors (warm-adjusted) */
-    --entity-character: #7a9cb8;
+    /* Entity colors (warm - no blue) */
+    --entity-character: #c9917a;
     --entity-location: #6b9a74;
     --entity-faction: #b8864a;
     --entity-item: #a8707a;
     --entity-event: #8a78a8;
-    --entity-chapter: #5a9a9a;
+    --entity-chapter: #b8976a;
     --entity-concept: #9a8a5a;
 
     /* Nebula/glow colors for backgrounds */
@@ -81,23 +81,23 @@
   }
 
   /* ========================================
-     DARK MODE (Night → Pre-dawn)
+     DARK MODE (Warm Charcoal/Brown)
      ======================================== */
   .dark {
-    /* Solid backgrounds */
-    --bg-deep: #0c0f1a;
-    --bg-surface: #12141f;
-    --bg-elevated: #1e1a2e;
-    --bg-card: #1a1625;
-    --bg-card-hover: #241e30;
-    --bg-warm: #1a1520;
+    /* Solid backgrounds - Warm charcoal/brown */
+    --bg-deep: #1a1613;
+    --bg-surface: #211d19;
+    --bg-elevated: #2a2420;
+    --bg-card: #252019;
+    --bg-card-hover: #302a22;
+    --bg-warm: #2a231c;
 
-    /* Gradients - Seamless flow */
-    --gradient-hero: linear-gradient(180deg, #0c0f1a 0%, #14121f 100%);
-    --gradient-surface: linear-gradient(180deg, #14121f 0%, #1a1520 100%);
-    --gradient-warm: linear-gradient(180deg, #1a1520 0%, #251a1a 100%);
-    --gradient-warm-mid: linear-gradient(180deg, #251a1a 0%, #2a1d1d 100%);
-    --gradient-footer: linear-gradient(180deg, #2a1d1d 0%, #1f1515 100%);
+    /* Gradients - Warm flow */
+    --gradient-hero: linear-gradient(180deg, #1a1613 0%, #211d19 100%);
+    --gradient-surface: linear-gradient(180deg, #211d19 0%, #2a231c 100%);
+    --gradient-warm: linear-gradient(180deg, #2a231c 0%, #332a20 100%);
+    --gradient-warm-mid: linear-gradient(180deg, #332a20 0%, #3a3024 100%);
+    --gradient-footer: linear-gradient(180deg, #3a3024 0%, #2d251c 100%);
 
     /* Button colors (separate from accent) */
     --btn-primary: #c77a6a;
@@ -112,47 +112,47 @@
     --accent: #d4a244;
     --accent-hover: #e8b84a;
     --accent-muted: #9a7a3a;
-    --accent-glow: rgba(212, 162, 68, 0.3);
+    --accent-glow: rgba(212, 162, 68, 0.25);
 
-    /* Borders */
-    --border-subtle: rgba(212, 162, 68, 0.1);
-    --border-strong: rgba(212, 162, 68, 0.2);
+    /* Borders - warm gold tint */
+    --border-subtle: rgba(212, 162, 68, 0.08);
+    --border-strong: rgba(212, 162, 68, 0.15);
 
-    /* Entity colors (warm-adjusted) */
-    --entity-character: #7a9cb8;
+    /* Entity colors (warm-adjusted - no blue) */
+    --entity-character: #c9917a;
     --entity-location: #6b9a74;
     --entity-faction: #b8864a;
     --entity-item: #a8707a;
     --entity-event: #8a78a8;
-    --entity-chapter: #5a9a9a;
+    --entity-chapter: #b8976a;
     --entity-concept: #9a8a5a;
 
-    /* Nebula/glow colors for backgrounds */
-    --nebula-primary: rgba(212, 162, 68, 0.05);
-    --nebula-secondary: rgba(138, 120, 168, 0.05);
-    --nebula-tertiary: rgba(122, 156, 184, 0.05);
+    /* Nebula/glow colors - warm, no blue */
+    --nebula-primary: rgba(212, 162, 68, 0.06);
+    --nebula-secondary: rgba(180, 140, 100, 0.05);
+    --nebula-tertiary: rgba(160, 120, 80, 0.04);
 
-    /* Star/sparkle color */
-    --star-color: rgba(245, 240, 230, 0.8);
-    --constellation-line: rgba(212, 162, 68, 0.15);
+    /* Star/sparkle color - warm cream */
+    --star-color: rgba(245, 235, 220, 0.7);
+    --constellation-line: rgba(212, 162, 68, 0.2);
 
     /* shadcn/ui compatible variables */
-    --background: #0c0f1a;
+    --background: #1a1613;
     --foreground: #f5f0e6;
-    --card: #1a1625;
+    --card: #252019;
     --card-foreground: #f5f0e6;
-    --popover: #1a1625;
+    --popover: #252019;
     --popover-foreground: #f5f0e6;
     --primary: #d4a244;
-    --primary-foreground: #0c0f1a;
-    --secondary: #1e1a2e;
+    --primary-foreground: #1a1613;
+    --secondary: #2a2420;
     --secondary-foreground: #f5f0e6;
-    --muted: #1e1a2e;
+    --muted: #2a2420;
     --muted-foreground: #b8a89a;
     --destructive: #ef4444;
     --destructive-foreground: #f5f0e6;
-    --border: rgba(212, 162, 68, 0.1);
-    --input: rgba(212, 162, 68, 0.1);
+    --border: rgba(212, 162, 68, 0.08);
+    --input: rgba(212, 162, 68, 0.08);
     --ring: #d4a244;
   }
 

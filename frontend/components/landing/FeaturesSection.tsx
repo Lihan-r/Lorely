@@ -46,8 +46,10 @@ const features = [
     title: "Constellation View",
     description: "See how all your pages connect in a beautiful, interactive graph. Discover relationships you didn't know existed.",
     Demo: WebViewDemo,
-    width: "w-full md:w-3/4",
+    width: "w-full md:w-[85%]",
     align: "ml-auto",
+    demoSize: "w-full h-56 lg:h-72",
+    layout: "vertical" as const,
   },
   {
     badge: "Writing",
@@ -55,8 +57,10 @@ const features = [
     title: "Write Drawer",
     description: "Distraction-free writing that stays connected to your world.",
     Demo: WriteDemo,
-    width: "w-full md:w-3/5",
+    width: "w-full md:w-[55%]",
     align: "mr-auto",
+    demoSize: "w-full lg:w-48 h-36 lg:h-40",
+    layout: "horizontal" as const,
   },
   {
     badge: "Linking",
@@ -64,8 +68,10 @@ const features = [
     title: "@Mentions",
     description: "Reference any entity with a simple @mention. Build connections as you write.",
     Demo: MentionsDemo,
-    width: "w-full md:w-[65%]",
-    align: "mx-auto",
+    width: "w-full md:w-[50%]",
+    align: "ml-auto",
+    demoSize: "w-full lg:w-40 h-32 lg:h-36",
+    layout: "horizontal" as const,
   },
   {
     badge: "Organization",
@@ -73,8 +79,10 @@ const features = [
     title: "Flexible Pages",
     description: "Create any type of page: characters, locations, items, factions, events. Structure your world however makes sense to you.",
     Demo: FlexiblePagesDemo,
-    width: "w-full md:w-[70%]",
-    align: "mr-auto",
+    width: "w-full md:w-[60%]",
+    align: "mx-auto",
+    demoSize: "w-full lg:w-44 h-32 lg:h-40",
+    layout: "horizontal" as const,
   },
 ];
 
@@ -139,7 +147,18 @@ export function FeaturesSection() {
               `}
             >
               <div className="p-6 lg:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+                <div className={`flex gap-6 ${
+                  feature.layout === "vertical"
+                    ? "flex-col"
+                    : "flex-col lg:flex-row lg:items-start"
+                }`}>
+                  {/* Demo - first for vertical layout */}
+                  {feature.layout === "vertical" && (
+                    <div className={`flex-shrink-0 ${feature.demoSize} rounded-xl bg-bg-surface border border-border-subtle overflow-hidden`}>
+                      <feature.Demo />
+                    </div>
+                  )}
+
                   {/* Text Content */}
                   <div className="flex-1">
                     <span className={`text-xs font-medium px-2 py-1 rounded-full ${feature.badgeColor}`}>
@@ -153,10 +172,12 @@ export function FeaturesSection() {
                     </p>
                   </div>
 
-                  {/* Demo */}
-                  <div className="flex-shrink-0 w-full lg:w-64 h-40 lg:h-48 rounded-xl bg-bg-surface border border-border-subtle overflow-hidden">
-                    <feature.Demo />
-                  </div>
+                  {/* Demo - after text for horizontal layout */}
+                  {feature.layout === "horizontal" && (
+                    <div className={`flex-shrink-0 ${feature.demoSize} rounded-xl bg-bg-surface border border-border-subtle overflow-hidden`}>
+                      <feature.Demo />
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

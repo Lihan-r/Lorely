@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Space_Grotesk, Source_Serif_4 } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -81,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${spaceGrotesk.variable} ${sourceSerif.variable}`} suppressHydrationWarning>
       <body className="font-sans">
         <Providers>{children}</Providers>
       </body>
