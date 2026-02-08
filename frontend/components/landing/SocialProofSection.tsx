@@ -1,64 +1,77 @@
 "use client";
 
-import { ScrollReveal } from "@/components/animations/ScrollReveal";
-import { AnimatedStat } from "@/components/animations/AnimatedCounter";
-import { TestimonialCarousel } from "./TestimonialCarousel";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+
+const testimonials = [
+  {
+    quote:
+      "I was using a 47-tab Notion setup. Lorely replaced all of it and I can actually find things now.",
+    author: "Sarah K.",
+    role: "Writing a fantasy trilogy",
+    initial: "S",
+  },
+  {
+    quote:
+      "The web view alone changed how I approach my worldbuilding. Seeing connections I never noticed before.",
+    author: "Marcus T.",
+    role: "Indie Game Developer",
+    initial: "M",
+  },
+  {
+    quote:
+      "Finally, something that works how my brain works. Everything links together naturally.",
+    author: "Elena R.",
+    role: "TTRPG Campaign Creator",
+    initial: "E",
+  },
+];
 
 export function SocialProofSection() {
-  const testimonials = [
-    {
-      quote:
-        "Finally, a tool that understands how worldbuilders think. I can actually find my notes now.",
-      author: "Fantasy Author",
-      role: "Writer",
-    },
-    {
-      quote:
-        "The web view alone changed how I approach my worldbuilding. Seeing connections I never noticed before.",
-      author: "Indie Game Developer",
-      role: "Game Designer",
-    },
-    {
-      quote:
-        "Clean, focused, and actually helps me write instead of getting in the way.",
-      author: "TTRPG Creator",
-      role: "Game Master",
-    },
-  ];
-
-  const stats = [
-    { value: 1000, label: "Worldbuilders" },
-    { value: 50000, label: "Pages Created" },
-    { value: 100000, label: "Connections Made" },
-  ];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
     <section className="section-padding section-warm-mid">
-      <div className="container-narrow">
-        {/* Section Header */}
-        <ScrollReveal className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-text-primary">
-            Trusted by worldbuilders
-          </h2>
-          <p className="mt-4 text-lg text-text-secondary">
-            Join writers, game designers, and creators who build with Lorely.
-          </p>
-        </ScrollReveal>
+      <div className="container-narrow" ref={containerRef}>
+        {/* Simple, honest statement */}
+        <motion.p
+          className="text-center text-lg text-text-secondary mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
+        >
+          Used by fantasy novelists, game designers, and TTRPG creators
+        </motion.p>
 
-        {/* Testimonials Carousel */}
-        <ScrollReveal delay={0.2}>
-          <TestimonialCarousel testimonials={testimonials} />
-        </ScrollReveal>
-
-        {/* Animated Stats */}
-        <div className="mt-16 grid grid-cols-3 gap-8 text-center">
-          {stats.map((stat, index) => (
-            <AnimatedStat
-              key={stat.label}
-              value={stat.value}
-              label={stat.label}
-              delay={index * 0.15}
-            />
+        {/* Testimonials grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <motion.blockquote
+              key={testimonial.author}
+              className="p-6 rounded-2xl bg-bg-elevated border border-border-subtle"
+              initial={{ opacity: 0, y: 30 }}
+              animate={
+                isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+              }
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <p className="text-text-primary italic leading-relaxed">
+                &ldquo;{testimonial.quote}&rdquo;
+              </p>
+              <footer className="mt-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold">
+                  {testimonial.initial}
+                </div>
+                <div>
+                  <p className="font-medium text-text-primary">
+                    {testimonial.author}
+                  </p>
+                  <p className="text-sm text-text-muted">{testimonial.role}</p>
+                </div>
+              </footer>
+            </motion.blockquote>
           ))}
         </div>
       </div>

@@ -182,7 +182,7 @@ export function WriteDemo() {
 
           {/* Active typing line - wrap in flex with proper spacing */}
           <div className="flex items-center flex-wrap">
-            <span className="text-text-secondary">The hero&nbsp;</span>
+            <span className="text-text-secondary whitespace-pre">The hero </span>
             {renderText()}
             <motion.span
               animate={{ opacity: cursorVisible ? 1 : 0 }}

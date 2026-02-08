@@ -37,18 +37,22 @@
     --accent-muted: #d4a855;
     --accent-glow: rgba(196, 136, 13, 0.3);
 
+    /* Secondary accents for variety */
+    --accent-warm: #d4654a;
+    --accent-earth: #8b7355;
+
     /* Borders */
     --border-subtle: rgba(44, 24, 16, 0.1);
     --border-strong: rgba(44, 24, 16, 0.2);
 
-    /* Entity colors (warm - no blue) */
+    /* Entity colors (ALL warm - no blue) */
     --entity-character: #c9917a;
-    --entity-location: #6b9a74;
-    --entity-faction: #b8864a;
-    --entity-item: #a8707a;
-    --entity-event: #8a78a8;
-    --entity-chapter: #b8976a;
-    --entity-concept: #9a8a5a;
+    --entity-location: #7a9968;
+    --entity-item: #c4a060;
+    --entity-event: #a08070;
+    --entity-faction: #9a7a88;
+    --entity-chapter: #b89060;
+    --entity-concept: #8a9070;
 
     /* Nebula/glow colors for backgrounds */
     --nebula-primary: rgba(196, 136, 13, 0.08);
@@ -103,10 +107,10 @@
     --btn-primary: #c77a6a;
     --btn-hover: #d48b7a;
 
-    /* Text */
-    --text-primary: #f5f0e6;
-    --text-secondary: #b8a89a;
-    --text-muted: #7a6f65;
+    /* Text - Warmer whites */
+    --text-primary: #f5ebe0;
+    --text-secondary: #c4b8a8;
+    --text-muted: #8a7e70;
 
     /* Accent (Golden hour gold) */
     --accent: #d4a244;
@@ -114,27 +118,31 @@
     --accent-muted: #9a7a3a;
     --accent-glow: rgba(212, 162, 68, 0.25);
 
+    /* Secondary accents for variety */
+    --accent-warm: #d4654a;
+    --accent-earth: #8b7355;
+
     /* Borders - warm gold tint */
-    --border-subtle: rgba(212, 162, 68, 0.08);
-    --border-strong: rgba(212, 162, 68, 0.15);
+    --border-subtle: rgba(212, 162, 68, 0.1);
+    --border-strong: rgba(212, 162, 68, 0.2);
 
-    /* Entity colors (warm-adjusted - no blue) */
+    /* Entity colors (ALL warm - no blue) */
     --entity-character: #c9917a;
-    --entity-location: #6b9a74;
-    --entity-faction: #b8864a;
-    --entity-item: #a8707a;
-    --entity-event: #8a78a8;
-    --entity-chapter: #b8976a;
-    --entity-concept: #9a8a5a;
+    --entity-location: #7a9968;
+    --entity-item: #c4a060;
+    --entity-event: #a08070;
+    --entity-faction: #9a7a88;
+    --entity-chapter: #b89060;
+    --entity-concept: #8a9070;
 
-    /* Nebula/glow colors - warm, no blue */
-    --nebula-primary: rgba(212, 162, 68, 0.06);
-    --nebula-secondary: rgba(180, 140, 100, 0.05);
-    --nebula-tertiary: rgba(160, 120, 80, 0.04);
+    /* Nebula/glow colors - warmer */
+    --nebula-primary: rgba(212, 162, 68, 0.08);
+    --nebula-secondary: rgba(180, 140, 100, 0.06);
+    --nebula-tertiary: rgba(160, 120, 80, 0.05);
 
     /* Star/sparkle color - warm cream */
-    --star-color: rgba(245, 235, 220, 0.7);
-    --constellation-line: rgba(212, 162, 68, 0.2);
+    --star-color: rgba(255, 248, 235, 0.8);
+    --constellation-line: rgba(212, 162, 68, 0.25);
 
     /* shadcn/ui compatible variables */
     --background: #1a1613;

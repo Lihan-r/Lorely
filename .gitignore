@@ -29,6 +29,10 @@ frontend/coverage/
 # Backend (Spring Boot)
 # ===================
 
+# Spring Boot local config (contains secrets)
+backend/src/main/resources/application-dev.yml
+backend/src/main/resources/application-local.yml
+
 # Build output
 backend/target/
 backend/build/

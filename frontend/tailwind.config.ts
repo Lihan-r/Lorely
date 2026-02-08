@@ -29,6 +29,8 @@ const config: Config = {
           hover: "var(--accent-hover)",
           muted: "var(--accent-muted)",
           glow: "var(--accent-glow)",
+          warm: "var(--accent-warm)",
+          earth: "var(--accent-earth)",
         },
 
         // Button colors (warm rose/coral)
