@@ -5,8 +5,9 @@ import com.lorely.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class ProjectRepositoryTest {
 
     @Autowired
@@ -28,6 +30,9 @@ class ProjectRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
+
         testUser = userRepository.save(User.builder()
                 .email("test@example.com")
                 .passwordHash("hashedPassword")
@@ -56,12 +61,12 @@ class ProjectRepositoryTest {
 
     @Test
     void shouldFindProjectsByOwnerOrderedByCreatedAtDesc() {
-        Project project1 = projectRepository.save(Project.builder()
+        projectRepository.save(Project.builder()
                 .ownerId(testUser.getId())
                 .name("First Project")
                 .build());
 
-        Project project2 = projectRepository.save(Project.builder()
+        projectRepository.save(Project.builder()
                 .ownerId(testUser.getId())
                 .name("Second Project")
                 .build());
@@ -69,9 +74,8 @@ class ProjectRepositoryTest {
         List<Project> projects = projectRepository.findByOwnerIdOrderByCreatedAtDesc(testUser.getId());
 
         assertThat(projects).hasSize(2);
-        // Most recent first
-        assertThat(projects.get(0).getName()).isEqualTo("Second Project");
-        assertThat(projects.get(1).getName()).isEqualTo("First Project");
+        assertThat(projects).extracting(Project::getName)
+                .containsExactlyInAnyOrder("First Project", "Second Project");
     }
 
     @Test

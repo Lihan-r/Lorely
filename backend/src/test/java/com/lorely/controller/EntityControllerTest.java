@@ -160,7 +160,7 @@ class EntityControllerTest {
     }
 
     @Test
-    void shouldGetAllEntitiesInProject() throws Exception {
+    void shouldGetAllEntitiesInProjectPaginated() throws Exception {
         entityRepository.save(WorldEntity.builder()
                 .projectId(testProject.getId())
                 .type(EntityType.CHARACTER)
@@ -176,7 +176,9 @@ class EntityControllerTest {
         mockMvc.perform(get("/api/projects/" + testProject.getId() + "/entities")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.page").value(0));
     }
 
     @Test
@@ -203,9 +205,10 @@ class EntityControllerTest {
                         .header("Authorization", "Bearer " + accessToken)
                         .param("type", "CHARACTER"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].type").value("CHARACTER"))
-                .andExpect(jsonPath("$[1].type").value("CHARACTER"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content[0].type").value("CHARACTER"))
+                .andExpect(jsonPath("$.content[1].type").value("CHARACTER"));
     }
 
     @Test
@@ -230,9 +233,10 @@ class EntityControllerTest {
 
         mockMvc.perform(get("/api/projects/" + testProject.getId() + "/entities/search")
                         .header("Authorization", "Bearer " + accessToken)
-                        .param("q", "elara"))
+                        .param("q", "el"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
@@ -332,7 +336,7 @@ class EntityControllerTest {
     }
 
     @Test
-    void shouldDeleteEntity() throws Exception {
+    void shouldSoftDeleteEntity() throws Exception {
         WorldEntity entity = entityRepository.save(WorldEntity.builder()
                 .projectId(testProject.getId())
                 .type(EntityType.CHARACTER)
@@ -341,6 +345,23 @@ class EntityControllerTest {
 
         mockMvc.perform(delete("/api/entities/" + entity.getId())
                         .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isNoContent());
+
+        // With @SQLRestriction, findById filters soft-deleted, so it appears empty
+        assertThat(entityRepository.findByIdWithTags(entity.getId())).isEmpty();
+    }
+
+    @Test
+    void shouldPermanentlyDeleteEntity() throws Exception {
+        WorldEntity entity = entityRepository.save(WorldEntity.builder()
+                .projectId(testProject.getId())
+                .type(EntityType.CHARACTER)
+                .title("To Delete Forever")
+                .build());
+
+        mockMvc.perform(delete("/api/entities/" + entity.getId())
+                        .header("Authorization", "Bearer " + accessToken)
+                        .param("permanent", "true"))
                 .andExpect(status().isNoContent());
 
         assertThat(entityRepository.findById(entity.getId())).isEmpty();
@@ -370,5 +391,27 @@ class EntityControllerTest {
 
         // Verify entity still exists
         assertThat(entityRepository.findById(otherEntity.getId())).isPresent();
+    }
+
+    @Test
+    void shouldPaginateEntities() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            entityRepository.save(WorldEntity.builder()
+                    .projectId(testProject.getId())
+                    .type(EntityType.CHARACTER)
+                    .title("Entity " + i)
+                    .build());
+        }
+
+        mockMvc.perform(get("/api/projects/" + testProject.getId() + "/entities")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .param("page", "0")
+                        .param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(5))
+                .andExpect(jsonPath("$.totalPages").value(3))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.last").value(false));
     }
 }

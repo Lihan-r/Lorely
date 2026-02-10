@@ -1,6 +1,7 @@
 package com.lorely.service;
 
 import com.lorely.dto.request.CreateRelationshipRequest;
+import com.lorely.dto.request.UpdateRelationshipRequest;
 import com.lorely.dto.response.RelationshipResponse;
 import com.lorely.exception.ResourceNotFoundException;
 import com.lorely.model.Relationship;
@@ -70,6 +71,32 @@ public class RelationshipService {
                 toEntity.getTitle(),
                 contextTitle
         );
+    }
+
+    @Transactional
+    public RelationshipResponse updateRelationship(UUID relationshipId, UpdateRelationshipRequest request) {
+        log.debug("Updating relationship {}", relationshipId);
+
+        Relationship relationship = getRelationshipById(relationshipId);
+
+        if (request.getRelationType() != null) {
+            relationship.setRelationType(request.getRelationType());
+        }
+
+        // Update context entity - null means remove it
+        if (request.getContextEntityId() != null) {
+            WorldEntity contextEntity = entityRepository.findById(request.getContextEntityId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Context entity not found"));
+            if (!contextEntity.getProjectId().equals(relationship.getProjectId())) {
+                throw new ResourceNotFoundException("Context entity does not belong to this project");
+            }
+            relationship.setContextEntityId(request.getContextEntityId());
+        }
+
+        Relationship savedRelationship = relationshipRepository.save(relationship);
+        log.info("Relationship updated: {}", savedRelationship.getId());
+
+        return toResponseWithTitles(savedRelationship);
     }
 
     @Transactional(readOnly = true)

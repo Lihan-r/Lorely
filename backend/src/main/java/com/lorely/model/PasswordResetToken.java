@@ -10,25 +10,29 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "password_reset_tokens")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class PasswordResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "token_hash", nullable = false)
+    private String tokenHash;
 
-    @Column(name = "display_name", length = 100)
-    private String displayName;
+    @Column(name = "expires_at", nullable = false)
+    private Instant expiresAt;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean used = false;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -38,5 +42,9 @@ public class User {
         if (createdAt == null) {
             createdAt = Instant.now();
         }
+    }
+
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiresAt);
     }
 }

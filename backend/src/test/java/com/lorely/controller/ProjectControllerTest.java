@@ -3,7 +3,6 @@ package com.lorely.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lorely.dto.request.CreateProjectRequest;
 import com.lorely.dto.request.UpdateProjectRequest;
-import com.lorely.dto.response.ProjectResponse;
 import com.lorely.model.Project;
 import com.lorely.model.User;
 import com.lorely.repository.ProjectRepository;
@@ -19,9 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -109,7 +105,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void shouldGetAllProjectsForUser() throws Exception {
+    void shouldGetAllProjectsForUserPaginated() throws Exception {
         projectRepository.save(Project.builder()
                 .ownerId(testUser.getId())
                 .name("Project 1")
@@ -123,7 +119,8 @@ class ProjectControllerTest {
         mockMvc.perform(get("/api/projects")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
@@ -146,8 +143,8 @@ class ProjectControllerTest {
         mockMvc.perform(get("/api/projects")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].name").value("My Project"));
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("My Project"));
     }
 
     @Test
@@ -227,7 +224,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void shouldDeleteProject() throws Exception {
+    void shouldSoftDeleteProject() throws Exception {
         Project project = projectRepository.save(Project.builder()
                 .ownerId(testUser.getId())
                 .name("To Delete")
@@ -237,6 +234,7 @@ class ProjectControllerTest {
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isNoContent());
 
+        // With @SQLRestriction, soft-deleted project is filtered out
         assertThat(projectRepository.findById(project.getId())).isEmpty();
     }
 

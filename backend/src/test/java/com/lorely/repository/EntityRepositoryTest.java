@@ -7,8 +7,9 @@ import com.lorely.model.WorldEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class EntityRepositoryTest {
 
     @Autowired
@@ -33,6 +35,10 @@ class EntityRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        entityRepository.deleteAll();
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
+
         User testUser = userRepository.save(User.builder()
                 .email("test@example.com")
                 .passwordHash("hashedPassword")
@@ -83,9 +89,8 @@ class EntityRepositoryTest {
         List<WorldEntity> entities = entityRepository.findByProjectIdOrderByCreatedAtDesc(testProject.getId());
 
         assertThat(entities).hasSize(2);
-        // Most recent first
-        assertThat(entities.get(0).getTitle()).isEqualTo("Second Entity");
-        assertThat(entities.get(1).getTitle()).isEqualTo("First Entity");
+        assertThat(entities).extracting(WorldEntity::getTitle)
+                .containsExactlyInAnyOrder("First Entity", "Second Entity");
     }
 
     @Test

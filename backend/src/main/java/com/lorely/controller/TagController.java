@@ -5,10 +5,11 @@ import com.lorely.dto.request.UpdateTagRequest;
 import com.lorely.dto.response.TagResponse;
 import com.lorely.exception.ForbiddenException;
 import com.lorely.model.Project;
-import com.lorely.model.Tag;
 import com.lorely.security.UserPrincipal;
 import com.lorely.service.ProjectService;
 import com.lorely.service.TagService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,12 +22,14 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Tags", description = "Tag management")
 public class TagController {
 
     private final TagService tagService;
     private final ProjectService projectService;
 
     @PostMapping("/api/projects/{projectId}/tags")
+    @Operation(summary = "Create a new tag in a project")
     public ResponseEntity<TagResponse> createTag(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID projectId,
@@ -37,6 +40,7 @@ public class TagController {
     }
 
     @GetMapping("/api/projects/{projectId}/tags")
+    @Operation(summary = "List tags in a project")
     public ResponseEntity<List<TagResponse>> getTags(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID projectId) {
@@ -46,30 +50,33 @@ public class TagController {
     }
 
     @GetMapping("/api/tags/{id}")
+    @Operation(summary = "Get a single tag by ID")
     public ResponseEntity<TagResponse> getTag(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id) {
-        Tag tag = tagService.getTagById(id);
+        com.lorely.model.Tag tag = tagService.getTagById(id);
         verifyProjectOwnership(tag.getProjectId(), userPrincipal.getUserId());
         return ResponseEntity.ok(TagResponse.fromTag(tag));
     }
 
     @PutMapping("/api/tags/{id}")
+    @Operation(summary = "Update a tag")
     public ResponseEntity<TagResponse> updateTag(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id,
             @Valid @RequestBody UpdateTagRequest request) {
-        Tag tag = tagService.getTagById(id);
+        com.lorely.model.Tag tag = tagService.getTagById(id);
         verifyProjectOwnership(tag.getProjectId(), userPrincipal.getUserId());
         TagResponse response = tagService.updateTag(id, request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/api/tags/{id}")
+    @Operation(summary = "Delete a tag")
     public ResponseEntity<Void> deleteTag(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id) {
-        Tag tag = tagService.getTagById(id);
+        com.lorely.model.Tag tag = tagService.getTagById(id);
         verifyProjectOwnership(tag.getProjectId(), userPrincipal.getUserId());
         tagService.deleteTag(id);
         return ResponseEntity.noContent().build();

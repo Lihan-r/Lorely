@@ -17,12 +17,14 @@ public class UserResponse {
 
     private UUID id;
     private String email;
+    private String displayName;
     private Instant createdAt;
 
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .displayName(user.getDisplayName())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

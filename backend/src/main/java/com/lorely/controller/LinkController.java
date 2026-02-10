@@ -8,6 +8,8 @@ import com.lorely.model.Project;
 import com.lorely.security.UserPrincipal;
 import com.lorely.service.LinkService;
 import com.lorely.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,12 +22,14 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Links", description = "Entity link management")
 public class LinkController {
 
     private final LinkService linkService;
     private final ProjectService projectService;
 
     @PostMapping("/api/projects/{projectId}/links")
+    @Operation(summary = "Create a new link between entities")
     public ResponseEntity<LinkResponse> createLink(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID projectId,
@@ -36,6 +40,7 @@ public class LinkController {
     }
 
     @GetMapping("/api/projects/{projectId}/links")
+    @Operation(summary = "List links in a project")
     public ResponseEntity<List<LinkResponse>> getLinks(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID projectId) {
@@ -45,10 +50,10 @@ public class LinkController {
     }
 
     @GetMapping("/api/entities/{entityId}/links")
+    @Operation(summary = "Get links for a specific entity")
     public ResponseEntity<List<LinkResponse>> getEntityLinks(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID entityId) {
-        // Get links first, then verify project ownership
         List<LinkResponse> links = linkService.getLinksForEntity(entityId);
         if (!links.isEmpty()) {
             verifyProjectOwnership(links.get(0).getProjectId(), userPrincipal.getUserId());
@@ -57,6 +62,7 @@ public class LinkController {
     }
 
     @DeleteMapping("/api/links/{id}")
+    @Operation(summary = "Delete a link")
     public ResponseEntity<Void> deleteLink(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id) {
