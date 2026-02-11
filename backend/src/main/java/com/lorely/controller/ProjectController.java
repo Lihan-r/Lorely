@@ -92,6 +92,8 @@ public class ProjectController {
     public ResponseEntity<ProjectResponse> restoreProject(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id) {
+        Project project = projectService.getProjectByIdIncludeDeleted(id);
+        verifyOwnership(project, userPrincipal.getUserId());
         ProjectResponse response = projectService.restoreProject(id);
         return ResponseEntity.ok(response);
     }

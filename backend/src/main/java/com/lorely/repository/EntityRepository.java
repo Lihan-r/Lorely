@@ -49,10 +49,10 @@ public interface EntityRepository extends JpaRepository<WorldEntity, UUID> {
 
     // Full-text search (native query for PostgreSQL tsvector)
     @Query(value = "SELECT * FROM entities WHERE project_id = :projectId " +
-            "AND search_vector @@ to_tsquery('english', :query) " +
-            "ORDER BY ts_rank(search_vector, to_tsquery('english', :query)) DESC",
+            "AND search_vector @@ plainto_tsquery('english', :query) " +
+            "ORDER BY ts_rank(search_vector, plainto_tsquery('english', :query)) DESC",
             countQuery = "SELECT COUNT(*) FROM entities WHERE project_id = :projectId " +
-                    "AND search_vector @@ to_tsquery('english', :query)",
+                    "AND search_vector @@ plainto_tsquery('english', :query)",
             nativeQuery = true)
     Page<WorldEntity> fullTextSearch(@Param("projectId") UUID projectId, @Param("query") String query, Pageable pageable);
 

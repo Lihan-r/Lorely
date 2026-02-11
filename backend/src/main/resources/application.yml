@@ -24,8 +24,13 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
 
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:3001}
+
 jwt:
-  secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-signing-minimum-32-chars}
+  # MUST be set via JWT_SECRET env var in production
+  secret: ${JWT_SECRET:dev-only-jwt-secret-do-not-use-in-production-change-me-to-a-real-64-char-min-secret}
   access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}
   refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 

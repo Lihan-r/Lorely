@@ -104,6 +104,12 @@ public class EntityService {
     }
 
     @Transactional(readOnly = true)
+    public WorldEntity getEntityByIdIncludeDeleted(UUID entityId) {
+        return entityRepository.findById(entityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+    }
+
+    @Transactional(readOnly = true)
     public EntityResponse getEntityResponseById(UUID entityId) {
         return EntityResponse.fromEntity(getEntityById(entityId));
     }
@@ -184,10 +190,8 @@ public class EntityService {
         if (query.length() < 3) {
             resultPage = entityRepository.searchByTitlePaginated(projectId, query, pageable);
         } else {
-            // Convert query to tsquery format: replace spaces with &
-            String tsQuery = query.trim().replaceAll("\\s+", " & ");
             try {
-                resultPage = entityRepository.fullTextSearch(projectId, tsQuery, pageable);
+                resultPage = entityRepository.fullTextSearch(projectId, query.trim(), pageable);
             } catch (Exception e) {
                 log.warn("Full-text search failed, falling back to ILIKE: {}", e.getMessage());
                 resultPage = entityRepository.searchByTitlePaginated(projectId, query, pageable);

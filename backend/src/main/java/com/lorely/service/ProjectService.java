@@ -75,6 +75,12 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
+    public Project getProjectByIdIncludeDeleted(UUID projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+    }
+
+    @Transactional(readOnly = true)
     public ProjectResponse getProjectResponseById(UUID projectId) {
         return ProjectResponse.fromProject(getProjectById(projectId));
     }

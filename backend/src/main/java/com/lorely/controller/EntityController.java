@@ -122,7 +122,8 @@ public class EntityController {
     public ResponseEntity<EntityResponse> restoreEntity(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable UUID id) {
-        // Use findById directly since the entity is soft-deleted and @Where would filter it
+        WorldEntity entity = entityService.getEntityByIdIncludeDeleted(id);
+        verifyProjectOwnership(entity.getProjectId(), userPrincipal.getUserId());
         EntityResponse response = entityService.restoreEntity(id);
         return ResponseEntity.ok(response);
     }

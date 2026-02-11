@@ -56,8 +56,8 @@ public class PasswordResetService {
 
         passwordResetTokenRepository.save(resetToken);
 
-        // Log token to console for dev (email integration later)
-        log.info("Password reset token for {}: {}", request.getEmail(), rawToken);
+        // TODO: Send token via email service
+        log.debug("Password reset token generated for {}", request.getEmail());
     }
 
     @Transactional
