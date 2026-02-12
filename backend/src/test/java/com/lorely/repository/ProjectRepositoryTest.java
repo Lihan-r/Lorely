@@ -34,7 +34,7 @@ class ProjectRepositoryTest {
         userRepository.deleteAll();
 
         testUser = userRepository.save(User.builder()
-                .email("test@example.com")
+                .email("project-repo-test@example.com")
                 .passwordHash("hashedPassword")
                 .build());
     }
@@ -88,7 +88,7 @@ class ProjectRepositoryTest {
     @Test
     void shouldNotFindProjectsFromOtherOwners() {
         User otherUser = userRepository.save(User.builder()
-                .email("other@example.com")
+                .email("project-repo-other@example.com")
                 .passwordHash("hashedPassword")
                 .build());
 

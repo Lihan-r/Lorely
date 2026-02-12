@@ -40,7 +40,7 @@ class EntityRepositoryTest {
         userRepository.deleteAll();
 
         User testUser = userRepository.save(User.builder()
-                .email("test@example.com")
+                .email("entity-repo-test@example.com")
                 .passwordHash("hashedPassword")
                 .build());
 
@@ -151,7 +151,7 @@ class EntityRepositoryTest {
     @Test
     void shouldNotFindEntitiesFromOtherProjects() {
         User otherUser = userRepository.save(User.builder()
-                .email("other@example.com")
+                .email("entity-repo-other@example.com")
                 .passwordHash("hashedPassword")
                 .build());
 

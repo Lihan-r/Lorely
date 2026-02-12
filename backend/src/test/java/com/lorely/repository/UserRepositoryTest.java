@@ -28,7 +28,7 @@ class UserRepositoryTest {
     @Test
     void shouldSaveAndFindUserByEmail() {
         User user = User.builder()
-                .email("test@example.com")
+                .email("user-repo-test@example.com")
                 .passwordHash("hashedPassword")
                 .build();
 
@@ -37,10 +37,10 @@ class UserRepositoryTest {
         assertThat(savedUser.getId()).isNotNull();
         assertThat(savedUser.getCreatedAt()).isNotNull();
 
-        Optional<User> foundUser = userRepository.findByEmail("test@example.com");
+        Optional<User> foundUser = userRepository.findByEmail("user-repo-test@example.com");
 
         assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().getEmail()).isEqualTo("test@example.com");
+        assertThat(foundUser.get().getEmail()).isEqualTo("user-repo-test@example.com");
     }
 
     @Test
