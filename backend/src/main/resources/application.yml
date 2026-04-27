@@ -49,6 +49,11 @@ jwt:
   access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}
   refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
+management:
+  health:
+    mail:
+      enabled: false
+
 springdoc:
   api-docs:
     path: /api-docs
