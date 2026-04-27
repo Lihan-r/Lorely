@@ -79,15 +79,15 @@ export function ProblemSection() {
                 animate={
                   isInView
                     ? {
-                        opacity: 1,
-                        scale: 1,
-                        rotate: note.rotate,
-                      }
+                      opacity: 1,
+                      scale: 1,
+                      rotate: note.rotate,
+                    }
                     : {
-                        opacity: 0,
-                        scale: 0.8,
-                        rotate: note.rotate * 2,
-                      }
+                      opacity: 0,
+                      scale: 0.8,
+                      rotate: note.rotate * 2,
+                    }
                 }
                 transition={{
                   type: "spring",
@@ -129,10 +129,10 @@ export function ProblemSection() {
               animate={
                 isInView
                   ? {
-                      opacity: 0.1,
-                      rotate: [0, 5, -5, 0],
-                      y: [0, -10, 0],
-                    }
+                    opacity: 0.1,
+                    rotate: [0, 5, -5, 0],
+                    y: [0, -10, 0],
+                  }
                   : { opacity: 0 }
               }
               transition={{
