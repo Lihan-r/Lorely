@@ -6,7 +6,6 @@ import com.lorely.dto.response.UserResponse;
 import com.lorely.exception.ResourceNotFoundException;
 import com.lorely.exception.ValidationException;
 import com.lorely.model.User;
-import com.lorely.repository.ProjectRepository;
 import com.lorely.repository.RefreshTokenRepository;
 import com.lorely.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProjectRepository projectRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
