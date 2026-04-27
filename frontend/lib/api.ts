@@ -159,10 +159,18 @@ class ApiClient {
         `Bearer ${this.accessToken}`;
     }
 
-    const response = await fetch(`${API_URL}${path}`, {
-      ...options,
-      headers,
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_URL}${path}`, {
+        ...options,
+        headers,
+      });
+    } catch {
+      throw new ApiException(0, {
+        error: "NETWORK_ERROR",
+        message: "Unable to connect to the server. Please try again later.",
+      });
+    }
 
     if (!response.ok) {
       let error: ApiError;
@@ -220,9 +228,10 @@ class ApiClient {
 
   // Project endpoints
   async getProjects(): Promise<ProjectResponse[]> {
-    return this.request<ProjectResponse[]>("/projects", {
+    const data = await this.request<{ content: ProjectResponse[] }>("/projects", {
       method: "GET",
     });
+    return data.content;
   }
 
   async getProject(id: string): Promise<ProjectResponse> {
