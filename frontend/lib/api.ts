@@ -266,15 +266,17 @@ class ApiClient {
     if (type) params.append("type", type);
     if (tagId) params.append("tagId", tagId);
     const queryString = params.toString();
-    return this.request<EntityResponse[]>(`/projects/${projectId}/entities${queryString ? `?${queryString}` : ""}`, {
+    const data = await this.request<{ content: EntityResponse[] }>(`/projects/${projectId}/entities${queryString ? `?${queryString}` : ""}`, {
       method: "GET",
     });
+    return data.content;
   }
 
   async searchEntities(projectId: string, query: string): Promise<EntityResponse[]> {
-    return this.request<EntityResponse[]>(`/projects/${projectId}/entities/search?q=${encodeURIComponent(query)}`, {
+    const data = await this.request<{ content: EntityResponse[] }>(`/projects/${projectId}/entities/search?q=${encodeURIComponent(query)}`, {
       method: "GET",
     });
+    return data.content;
   }
 
   async getEntity(id: string): Promise<EntityResponse> {
